@@ -29,42 +29,48 @@
         v-model="datetimerange"
         type="datetimerange"
         rangeSeparator="至"
+        @change="timeChange()"
       />
       <view v-if="currentTabIndex == 0">
-        <uni-card :is-shadow="false" class="container">
+        <uni-card
+          :is-shadow="false"
+          class="container"
+          v-for="(item, index) in tips"
+          :key="index"
+        >
           <view class="info">
             <view class="title">
-              <h3>图书馆学习</h3>
+              <h3>{{ item.title }}</h3>
             </view>
             <view>
-              <text class="sex">性别不限</text>
-              <text>人数不限</text>
+              <text class="sex">{{ item.gender }}</text>
+              <text>{{ item.number }}</text>
             </view>
             <view>
-              <text>开始时间：2023-4-12 7:30</text>
+              <text>开始时间：{{ item.goTime }}</text>
             </view>
             <view class="tags">
               <u-tag
-                text="标签"
+                :text="item.category"
                 type="info"
                 shape="circle"
                 plain
                 borderColor="#EFEFEF"
               ></u-tag>
-              <u-tag
+              <!-- <u-tag
+                :text="item.categoryNext"
+                type="info"
+                shape="circle"
+                plain
+                borderColor="#EFEFEF"
+              ></u-tag> -->
+              <!-- <u-tag
                 text="标签"
                 type="info"
                 shape="circle"
                 plain
                 borderColor="#EFEFEF"
-              ></u-tag>
-              <u-tag
-                text="标签"
-                type="info"
-                shape="circle"
-                plain
-                borderColor="#EFEFEF"
-              ></u-tag>
+              ></u-tag> -->
             </view>
           </view>
           <view class="pickbotton">
@@ -83,6 +89,7 @@
             height="55px"
             src="https://s2.loli.net/2023/04/05/TNSu8oipV5LJqAr.png"
             shape="circle"
+            @click="pageJump('/pages/index/publish/publish')"
           ></u--image>
         </view>
       </view>
@@ -93,13 +100,25 @@
 </template>
 
 <script>
+import request from "@/request/request.js";
 import uText from "../../uni_modules/uview-plus/components/u--text/u--text.vue";
 export default {
   components: { uText },
   data() {
     return {
-      datetimerange: "",
+      searchForm: {
+        lastTime: null,
+        startTime: null,
+        endTime: null,
+        category: null,
+        categoryNext: null,
+        gender: null,
+        number: null,
+      },
+
+      datetimerange: null,
       currentTabIndex: 0,
+      tips: [],
       tabslist: [
         {
           name: "全部",
@@ -122,13 +141,47 @@ export default {
       ],
     };
   },
-  onLoad() {},
+  onLoad() {
+    console.log("openid", uni.getStorageSync("openid"));
+    this.getTopic();
+  },
   methods: {
+    async getTopic() {
+      let data = {
+        lastTime: this.searchForm.lastTime,
+        startTime: this.searchForm.startTime,
+        endTime: this.searchForm.endTime,
+        screen: {
+          category: this.searchForm.category,
+          numberMin: null,
+          gender: null,
+          numberMax: null,
+        },
+      };
+      const { data: res } = await request(
+        "/controller/topic/search",
+        "POST",
+        data
+      );
+      this.tips = res.waterfalls;
+      console.log(res.waterfalls);
+    },
+    pageJump(url) {
+      uni.navigateTo({
+        url: url,
+      });
+    },
+    timeChange() {
+      this.searchForm.startTime = this.datetimerange[0];
+      this.searchForm.endTime = this.datetimerange[1];
+    },
     change(index) {
-      console.log(index);
+      this.searchForm.category = index.name;
+      // console.log("这是index", index);
+      // console.log("这是category", this.searchForm.category);
       if (this.currentTabIndex != index.index) {
         this.currentTabIndex = index.index;
-        console.log(this.currentTabIndex);
+        // console.log(this.currentTabIndex);
       }
     },
   },
@@ -176,10 +229,13 @@ export default {
   display: flex;
   justify-content: space-around;
   flex-direction: column;
+  font-size: 13px;
+  color: #9a9a9a;
 }
 .title {
   font-size: 17px;
   font-weight: bold;
+  color: black;
 }
 ::v-deep .uni-card {
   // display: flex;
@@ -188,7 +244,7 @@ export default {
   margin-top: 2vh !important;
   // padding: 0 !important;
   border-radius: 10px;
-  height: 20vh;
+  height: 21vh;
   width: 83.5vw;
   box-shadow: 5px 5px 8px #bebebe !important;
 }

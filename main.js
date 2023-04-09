@@ -1,5 +1,6 @@
 import App from './App'
 import uviewPlus from '@/uni_modules/uview-plus'
+import request from "@/request/request.js";
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false

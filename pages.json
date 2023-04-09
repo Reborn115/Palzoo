@@ -7,7 +7,15 @@
 			}
 	},
 	"pages": [
-		
+		{
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -46,6 +54,46 @@
         } */
         
         
+        ,{
+            "path" : "pages/index/publish/publish",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "发布组队",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/personalPage/personalPage",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "个人主页",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/myConcern/myConcern",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的好友",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/myTeam/myTeam",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的组队",
+                "enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
