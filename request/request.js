@@ -1,7 +1,16 @@
-const BASE_URL = "http://43.143.162.177:11500";
+// const BASE_URL = "http://43.143.162.177:11500";
+const BASE_URL = "https://www.haorui.xyz";
 
 const request = (url, method, data, header = {}) => {
   return new Promise((resolve, reject) => {
+    console.log("openid", uni.getStorageSync("openid"));
+    if (url != "/controller/topic/search" && url != "/control/sign/in") {
+      if (!uni.getStorageSync("openid")) {
+        uni.navigateTo({
+          url: "/pages/login/login",
+        });
+      }
+    }
     uni.request({
       url: BASE_URL + url,
       method: method,

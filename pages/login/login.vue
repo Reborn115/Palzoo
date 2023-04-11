@@ -5,6 +5,10 @@
       text="微信登录"
       @click="login(this.code)"
     ></u-button>
+    <view class="linkbox">
+      <text @click="goHome"> 稍后进行登录 </text>
+      <u-icon name="arrow-right-double" color="#3c9cff;"></u-icon>
+    </view>
     <u-toast ref="uToast"></u-toast>
   </view>
 </template>
@@ -45,8 +49,21 @@ export default {
         },
       });
     }
+    if (!uni.getStorageSync("openid")) {
+      this.showToast({
+        type: "error",
+        message: "登录后体验更多功能",
+      });
+    }
   },
   methods: {
+    goHome() {
+      console.log("555");
+
+      uni.switchTab({
+        url: "/pages/index/index",
+      });
+    },
     showToast(params) {
       this.$refs.uToast.show({
         ...params,
@@ -58,7 +75,27 @@ export default {
         },
       });
     },
-
+    appLoginWx() {
+      // 获取用户信息
+      // 注意 getUserProfile 不支持在事件中使用异步操作
+      // 否则会触发错误：{errMsg: "getUserProfile:fail can only be invoked by user TAP gesture."}
+      uni.getUserProfile({
+        lang: "zh_CN",
+        desc: "获取用户信息",
+        success: (userInfo) => {
+          console.log(userInfo, "userInfo");
+          // uni.login({
+          //   provider: "weixin",
+          //   success: (loginInfo) => {
+          //     console.log(loginInfo, "loginInfo");
+          //   },
+          // });
+        },
+        fail: (err) => {
+          console.log(err, "err");
+        },
+      });
+    },
     async login(code) {
       const { data: res } = await request("/control/sign/in", "POST", {
         code: code,
@@ -71,7 +108,7 @@ export default {
         key: "openid",
         data: res.openid,
       });
-
+      this.appLoginWx();
       this.showToast({
         type: "success",
         message: "登录成功",
@@ -84,10 +121,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.linkbox {
+  margin-top: 200rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #3c9cff;
+}
 .content {
   // height: 100vh;
   display: flex;
-  padding-top: 70vh;
+  padding-top: 50vh;
+  flex-direction: column;
   // align-items: center;
   // justify-content: center;
 }

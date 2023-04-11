@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <u-toast ref="uToast"></u-toast>
     <view class="one">
       <view class="title">
         <u--text text="标题：" class="text"></u--text>
@@ -103,13 +104,13 @@ export default {
   data() {
     return {
       form: {
-        title: "",
-        details: "",
-        sex: "",
-        count: "",
-        paltime: "",
-        tag1: "",
-        tag2: "",
+        title: null,
+        details: null,
+        sex: null,
+        count: null,
+        paltime: null,
+        tag1: null,
+        tag2: null,
       },
       radiotag: [
         { value: "运动", text: "运动" },
@@ -161,7 +162,8 @@ export default {
   },
   methods: {
     async submit(form) {
-      let data = {
+      let subform = {
+        openId: uni.getStorageSync("openid"),
         title: form.title,
         category: form.tag1,
         categoryNext: null,
@@ -170,12 +172,8 @@ export default {
         number: form.count,
         goTime: form.paltime,
       };
-      console.log(data);
-      const { data: res } = await request(
-        "/controller/topic/submit",
-        "POST",
-        data
-      );
+      console.log(subform);
+      const res = await request("/controller/topic/submit", "POST", subform);
       // uni.setStorage({
       //   key: "sessionKey",
       //   data: res.sessionKey,
@@ -184,17 +182,28 @@ export default {
       //   key: "openid",
       //   data: res.openid,
       // });
-      console.log(code);
+      // console.log(res);
       console.log(res);
       if (res.code == "00000") {
         this.showToast({
           type: "success",
           message: res.message,
-          // url: "/pages/index/index",
+          url: "/pages/index/index",
         });
       }
 
       console.log(res);
+    },
+    showToast(params) {
+      this.$refs.uToast.show({
+        ...params,
+        complete() {
+          params.url &&
+            uni.switchTab({
+              url: params.url,
+            });
+        },
+      });
     },
   },
 };

@@ -8,15 +8,6 @@
 	},
 	"pages": [
 		{
-            "path" : "pages/login/login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        },
-		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "Palzoo",
@@ -25,6 +16,16 @@
 				"enablePullDownRefresh": false
 			}
 		},
+		{
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		
 		{
 			"path": "pages/message/message",
 			"style": {
@@ -91,6 +92,25 @@
                 "navigationBarTitleText": "我的组队",
                 "enablePullDownRefresh": false,
 				"navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/paldetails/paldetails",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "pal详情",
+                "enablePullDownRefresh": false
+				// "navigationBarBackgroundColor": "#FFFFFF"
+            }
+            
+        }
+        ,{
+            "path" : "pages/message/chatroom/chatroom",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "聊天室",
+                "enablePullDownRefresh": false
             }
             
         }
