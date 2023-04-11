@@ -1,10 +1,39 @@
 <template>
   <view class="content">
+    <u--image
+      mode="widthFix"
+      :showLoading="true"
+      :src="imgUrl"
+      width="280px"
+      height="280px"
+      @click="click"
+    ></u--image>
     <u-button
       type="success"
       text="微信登录"
       @click="login(this.code)"
     ></u-button>
+    <u-button
+      type="primary"
+      text="账号密码登录(测试)"
+      @click="login(this.code)"
+    ></u-button>
+    <view class="privacy">
+      <uni-data-checkbox
+        multiple
+        :localdata="range"
+        @change="change"
+        class="checkbotton"
+      ></uni-data-checkbox>
+      <text>已阅读并同意</text>
+      <uni-link
+        href="https://www.yuleng.top/app-huimao-yszc/"
+        text="Palzoo隐私协议"
+        color="#CF6A1B"
+        font-weight="bold"
+        showUnderLine="false"
+      ></uni-link>
+    </view>
     <view class="linkbox">
       <text @click="goHome"> 稍后进行登录 </text>
       <u-icon name="arrow-right-double" color="#3c9cff;"></u-icon>
@@ -19,8 +48,10 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
+      imgUrl: "https://s2.loli.net/2023/04/11/Xflh5kKy3WqdVGI.png",
       title: "Hello",
       code: uni.getStorageSync("code"),
+      range: [{ value: 1, text: "" }],
     };
   },
 
@@ -57,6 +88,9 @@ export default {
     }
   },
   methods: {
+    change(e) {
+      this.isPrivacy = !this.isPrivacy;
+    },
     goHome() {
       console.log("555");
 
@@ -97,32 +131,53 @@ export default {
       });
     },
     async login(code) {
-      const { data: res } = await request("/control/sign/in", "POST", {
-        code: code,
-      });
-      uni.setStorage({
-        key: "sessionKey",
-        data: res.sessionKey,
-      });
-      uni.setStorage({
-        key: "openid",
-        data: res.openid,
-      });
-      this.appLoginWx();
-      this.showToast({
-        type: "success",
-        message: "登录成功",
-        url: "/pages/index/index",
-      });
-      console.log(res);
+      if (!this.isPrivacy) {
+        this.showToast({
+          type: "error",
+          message: "请同意隐私政策",
+        });
+      } else {
+        const { data: res } = await request("/control/sign/in", "POST", {
+          code: code,
+        });
+        uni.setStorage({
+          key: "sessionKey",
+          data: res.sessionKey,
+        });
+        uni.setStorage({
+          key: "openid",
+          data: res.openid,
+        });
+        this.appLoginWx();
+        this.showToast({
+          type: "success",
+          message: "登录成功",
+          url: "/pages/index/index",
+        });
+        console.log(res);
+      }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+::v-deep .u-button {
+  width: 90vw !important;
+  margin-bottom: 3vh;
+  border-radius: 10px !important;
+}
+.privacy {
+  margin-bottom: 80rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text {
+    font-size: 13.5px;
+  }
+}
 .linkbox {
-  margin-top: 200rpx;
+  margin-top: 10vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,8 +185,10 @@ export default {
 }
 .content {
   // height: 100vh;
+  // justify-content: center;
+  align-items: center;
   display: flex;
-  padding-top: 50vh;
+  padding-top: 15vh;
   flex-direction: column;
   // align-items: center;
   // justify-content: center;
