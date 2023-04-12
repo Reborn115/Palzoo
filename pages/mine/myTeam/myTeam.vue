@@ -112,6 +112,7 @@
 </template>
 
 <script>
+import request from "@/request/request.js";
 export default {
   data() {
     return {
@@ -146,6 +147,24 @@ export default {
         },
       ],
     };
+  },
+  onLoad(e) {
+    this.getTeam();
+  },
+  methods: {
+    async getTeam() {
+      let openId = String(this.openid);
+      const { data: res } = await request(
+        "/control/user/info/get" +
+          "?openId=" +
+          openId +
+          "&userId=" +
+          this.userId,
+        "GET"
+      );
+
+      console.log(res);
+    },
   },
 };
 </script>

@@ -1,5 +1,6 @@
 <template>
   <view class="content">
+    <u-toast ref="uToast"></u-toast>
     <!-- 聊天内容 -->
     <!-- scroll-view滚动视图  scroll-into-view设置哪个方向可滚动，则在哪个方向滚动到该元素 -->
     <scroll-view class="chat" scroll-y="true" :scroll-into-view="scrollToView">
@@ -16,7 +17,10 @@
           <view class="chat-time" v-if="item.time != ''">{{ item.time }}</view>
 
           <!-- 对方的消息-->
-          <view class="msg-m msg-left" v-if="item.fromUserId != meId">
+          <view
+            class="msg-m msg-left"
+            v-if="item.openid && item.openid != this.openid"
+          >
             <!-- 头像 -->
             <image class="user-img" :src="otherhead"></image>
             <!-- 发送的内容是文字时 -->
@@ -26,7 +30,10 @@
           </view>
 
           <!-- 我发的消息-->
-          <view class="msg-m msg-right" v-if="item.fromUserId == meId">
+          <view
+            class="msg-m msg-right"
+            v-if="!item.openid || item.openid == this.openid"
+          >
             <image class="user-img" :src="myhead"></image>
             <view class="message">
               <view class="msg-text">{{ item.message }}</view>
@@ -51,19 +58,20 @@ export default {
       // 聊天室房间号
       // roomId: 0,
       //我的id
-      meId: uni.getStorageSync("userId"),
+      meId: uni.getStorageSync("username"),
       otherId: 0,
       token: uni.getStorageSync("token"),
       // 对方头像
       otherhead: "",
       // 我的头像
-      myhead: "",
+      myhead: uni.getStorageSync("avatarUrl"),
       //聊天记录
       msg: [
-        {
-          time: "2023-04-01 19:00:00",
-          message: "我爱你",
-        },
+        // {
+        //   openid: "or6L_5JOa9Heqt15s1QSjEBs97to",
+        //   time: "2023-04-01 19:00:00",
+        //   message: "我爱你",
+        // },
       ],
       //高度控制 滚动到该元素
       scrollToView: "",
@@ -75,6 +83,7 @@ export default {
     };
   },
   onLoad(e) {
+    console.log("touxiang", uni.getStorageSync("avatarUrl"));
     if (!uni.getStorageSync("openid")) {
       uni.navigateTo({
         url: "/pages/login/login",
@@ -104,6 +113,17 @@ export default {
     submit,
   },
   methods: {
+    showToast(params) {
+      this.$refs.uToast.show({
+        ...params,
+        complete() {
+          params.url &&
+            uni.switchTab({
+              url: params.url,
+            });
+        },
+      });
+    },
     // 获取聊天者信息
     getperson() {
       uni.request({
@@ -185,6 +205,7 @@ export default {
           success: () => {
             this.msg.push(msgdata);
             console.log("beforenexttick", this.msg);
+            this.goBottom();
             // 跳转滚动到最后一条数据;
             // this.$nextTick(function () {
             //   console.log("nexttick", this.msg);
@@ -233,22 +254,39 @@ export default {
       });
       //接收对方发来的消息
       uni.onSocketMessage((res) => {
+        this.goBottom();
         if (res.data != "连接成功") {
           // this.$api.msg('你有新的消息');
           // res.data = res.data;
           res.data = JSON.parse(res.data);
-          console.log("收到服务器内容：res.data" + res.data);
-          console.log("收到服务器内容：res.data.time" + res.data.time);
+          // console.log("收到服务器内容：res.data.openid" + res.data.openid);
+          // console.log("收到服务器内容：res.data.time" + res.data.time);
           // if (
           //   res.data.openid != uni.getStorageSync("openid") &&
           //   res.data.openid != "system"
           // ) {
-          console.log("进来了");
-          this.msg.push(res.data);
+          // console.log("进来了");
+          if (res.data.openid == "system") {
+            console.log(res.data.message);
+            let openid = res.data.message.split(",")[0];
+            console.log("openid", openid);
+            openid = "用户" + openid + "驾到";
+            this.showToast({
+              type: "success",
+              message: openid,
+            });
+          } else {
+            this.msg.push(res.data);
+            console.log("收到服务器内容：this.message", this.msg);
+            this.goBottom();
+          }
+
+          // console.log(this.openid);
           // }
           // if (res.data.responseType == "zzrServer") {
 
           // }
+          // this.goBottom();
         }
         // this.$nextTick(function () {
         //   this.scrollToView = "msg" + (this.msg.length - 1);

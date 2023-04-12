@@ -91,11 +91,10 @@ export default {
     change(e) {
       this.isPrivacy = !this.isPrivacy;
     },
-    goHome() {
+    goUploud() {
       console.log("555");
-
-      uni.switchTab({
-        url: "/pages/index/index",
+      uni.navigateTo({
+        url: "/pages/login/upload/upload",
       });
     },
     showToast(params) {
@@ -109,27 +108,27 @@ export default {
         },
       });
     },
-    appLoginWx() {
-      // 获取用户信息
-      // 注意 getUserProfile 不支持在事件中使用异步操作
-      // 否则会触发错误：{errMsg: "getUserProfile:fail can only be invoked by user TAP gesture."}
-      uni.getUserProfile({
-        lang: "zh_CN",
-        desc: "获取用户信息",
-        success: (userInfo) => {
-          console.log(userInfo, "userInfo");
-          // uni.login({
-          //   provider: "weixin",
-          //   success: (loginInfo) => {
-          //     console.log(loginInfo, "loginInfo");
-          //   },
-          // });
-        },
-        fail: (err) => {
-          console.log(err, "err");
-        },
-      });
-    },
+    // appLoginWx() {
+    //   // 获取用户信息
+    //   // 注意 getUserProfile 不支持在事件中使用异步操作
+    //   // 否则会触发错误：{errMsg: "getUserProfile:fail can only be invoked by user TAP gesture."}
+    //   uni.getUserProfile({
+    //     lang: "zh_CN",
+    //     desc: "获取用户信息",
+    //     success: (userInfo) => {
+    //       console.log(userInfo, "userInfo");
+    //       // uni.login({
+    //       //   provider: "weixin",
+    //       //   success: (loginInfo) => {
+    //       //     console.log(loginInfo, "loginInfo");
+    //       //   },
+    //       // });
+    //     },
+    //     fail: (err) => {
+    //       console.log(err, "err");
+    //     },
+    //   });
+    // },
     async login(code) {
       if (!this.isPrivacy) {
         this.showToast({
@@ -148,12 +147,31 @@ export default {
           key: "openid",
           data: res.openid,
         });
-        this.appLoginWx();
-        this.showToast({
-          type: "success",
-          message: "登录成功",
-          url: "/pages/index/index",
+        uni.setStorage({
+          key: "avatarUrl",
+          data: res.avatarUrl,
         });
+        uni.setStorage({
+          key: "username",
+          data: res.username,
+        });
+        console.log("touxiang", uni.getStorageSync("avatarUrl"));
+        console.log(res);
+        // this.appLoginWx();
+        if (res.username == null || res.avatarUrl == null) {
+          this.showToast({
+            type: "success",
+            message: "登录成功",
+          });
+          this.goUploud();
+        } else {
+          this.showToast({
+            type: "success",
+            message: "登录成功",
+            url: "/pages/index/index",
+          });
+        }
+
         console.log(res);
       }
     },

@@ -60,13 +60,34 @@
 </template>
 
 <script>
+import request from "@/request/request.js";
 export default {
   data() {
     return {
+      info: {},
       name: "肥肥鲨",
       school: "天津理工大学",
       avatorurl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
+      userId: "0",
     };
+  },
+  onLoad(e) {
+    this.getInfo();
+  },
+  methods: {
+    async getInfo() {
+      let openId = uni.getStorageSync("openid");
+      const { data: res } = await request(
+        "/control/user/info/get" +
+          "?openId=" +
+          openId +
+          "&userId=" +
+          this.userId,
+        "GET"
+      );
+      this.info = res;
+      console.log(this.info);
+    },
   },
 };
 </script>

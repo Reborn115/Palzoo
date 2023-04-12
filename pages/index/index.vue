@@ -163,6 +163,8 @@ export default {
     this.getTopic();
   },
   onLoad() {
+    this.searchForm.category = null;
+    this.searchForm.lastTime = null;
     console.log("openid", uni.getStorageSync("openid"));
     this.getTopic();
   },

@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import request from "@/request/request.js";
 import dateTime from "./dateTime";
 export default {
   data() {
@@ -31,16 +32,25 @@ export default {
           latestMessage: "我爱你",
           time: "2023-01-05 14:00",
           num: "6",
+          openid: uni.getStorageSync("openid"),
         },
       ],
       timer: "",
     };
   },
-  onShow() {
+  // onShow() {
+  //   console.log(this.openid);
+  //   this.getMessageList();
+  //   // this.timer = setInterval(() => {
+  //   //   this.getMessageList();
+  //   // }, 2000);
+  // },
+  onLoad(e) {
+    console.log(this.openid);
     this.getMessageList();
-    this.timer = setInterval(() => {
-      this.getMessageList();
-    }, 2000);
+    // this.timer = setInterval(() => {
+    //   this.getMessageList();
+    // }, 2000);
   },
   onUnload() {
     clearInterval(this.timer);
@@ -49,6 +59,16 @@ export default {
     clearInterval(this.timer);
   },
   methods: {
+    async getMessageList() {
+      let openId = String(uni.getStorageSync("openid"));
+      console.log("openId", openId);
+      const { data: res } = await request(
+        "/control/message/get" + "?openId=" + openId,
+        "GET"
+      );
+      this.list = res;
+      console.log(this.list);
+    },
     gochat(roomId, type, name) {
       if (type == 1) {
         clearInterval(this.timer);
@@ -70,23 +90,23 @@ export default {
         });
       }
     },
-    getMessageList() {
-      uni.request({
-        url: "https://api.yuleng.top:38088/api/message-num-list",
-        header: {
-          token: uni.getStorageSync("token"), //自定义请求头信息
-        },
-        success: (res) => {
-          console.log(res);
-          res.data.data.messageNumList.forEach((item, index) => {
-            let time = item.time * 1000;
-            item.time = dateTime.dateTime(time);
-          });
-          this.list = res.data.data.messageNumList;
-          console.log(this.list);
-        },
-      });
-    },
+    // getMessageList() {
+    //   uni.request({
+    //     url: "https://api.yuleng.top:38088/api/message-num-list",
+    //     header: {
+    //       token: uni.getStorageSync("token"), //自定义请求头信息
+    //     },
+    //     success: (res) => {
+    //       console.log(res);
+    //       res.data.data.messageNumList.forEach((item, index) => {
+    //         let time = item.time * 1000;
+    //         item.time = dateTime.dateTime(time);
+    //       });
+    //       this.list = res.data.data.messageNumList;
+    //       console.log(this.list);
+    //     },
+    //   });
+    // },
     addchat() {
       uni.navigateTo({
         url: "/pages/chat/addchat/addchat",
