@@ -7,7 +7,7 @@
           duration="450"
           :lazy-load="true"
           :showLoading="true"
-          :src="avatorurl"
+          :src="info.avatarUrl"
           width="80px"
           height="80px"
           @click="click"
@@ -15,7 +15,7 @@
         ></u--image>
       </view>
       <view class="text">
-        <text class="nametext">{{ name }}</text>
+        <text class="nametext">{{ info.username }}</text>
         <text class="schooltext">{{ school }}</text>
       </view>
     </view>
@@ -71,12 +71,16 @@ export default {
       userId: "0",
     };
   },
-  onLoad(e) {
+  onLoad() {
+    this.getInfo();
+  },
+  onShow() {
     this.getInfo();
   },
   methods: {
     async getInfo() {
       let openId = uni.getStorageSync("openid");
+      console.log(openId);
       const { data: res } = await request(
         "/control/user/info/get" +
           "?openId=" +

@@ -124,6 +124,15 @@
             }
             
         } 
+        ,{
+            "path" : "pages/mine/personalPage/editInfo/editInfo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "编辑资料",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

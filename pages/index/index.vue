@@ -1,6 +1,6 @@
 <template>
   <view class="content">
-    <view class="add">
+    <view class="add" v-if="this.nowTime >= 1681365619000">
       <u--image
         :lazy-load="true"
         :showLoading="true"
@@ -130,7 +130,7 @@ export default {
         gender: null,
         number: null,
       },
-
+      nowTime: null,
       status: "loadmore",
       datetimerange: null,
       currentTabIndex: 0,
@@ -162,12 +162,25 @@ export default {
     console.log("到底了");
     this.getTopic();
   },
+  onPullDownRefresh() {
+    console.log("refresh");
+    setTimeout(function () {
+      uni.stopPullDownRefresh();
+      this.getTopic();
+    }, 1000);
+  },
   onLoad() {
+    this.nowTime = Date.parse(new Date());
+    console.log("nowtime", this.nowTime);
     this.searchForm.category = null;
     this.searchForm.lastTime = null;
     console.log("openid", uni.getStorageSync("openid"));
     this.getTopic();
   },
+  // onShow() {
+  //   console.log(this.searchForm.lastTime);
+  //   this.getTopic();
+  // },
   methods: {
     async getTopic() {
       let data = {
@@ -190,8 +203,11 @@ export default {
         this.tips = res.waterfalls;
         this.searchForm.lastTime = res.nextTime;
       } else {
-        this.tips.push(...res.waterfalls);
-        this.status = "loadmore";
+        if (res.nextTime == this.searchForm.lastTime) {
+          this.tips.push(...res.waterfalls);
+          this.status = "loadmore";
+          this.searchForm.lastTime = res.nextTime;
+        }
       }
 
       console.log(res.waterfalls);

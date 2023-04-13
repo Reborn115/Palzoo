@@ -158,7 +158,10 @@ export default {
         console.log("touxiang", uni.getStorageSync("avatarUrl"));
         console.log(res);
         // this.appLoginWx();
-        if (res.username == null || res.avatarUrl == null) {
+        if (
+          res.username == null ||
+          res.avatarUrl == "https://www.haorui.xyz/palzoo/Head.png"
+        ) {
           this.showToast({
             type: "success",
             message: "登录成功",

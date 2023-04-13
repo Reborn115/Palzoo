@@ -1,5 +1,28 @@
 <template>
   <view class="content">
+    <u-sticky offset-top="0" bgColor="#F8F8F8">
+      <view class="header">
+        <view class="peopleNum"> 3名群成员 </view>
+        <view class="botton">
+          <u-button
+            color="linear-gradient(to bottom, #29A7FE, #62DFE5)"
+            shape="circle"
+            text="退出群组"
+            @click="quit()"
+          ></u-button>
+          <view>
+            <uni-icons
+              type="notification-filled"
+              size="28"
+              color="#29A7FE"
+            ></uni-icons>
+          </view>
+          <view>
+            <uni-icons type="list" size="28" color="#9A9A9A"></uni-icons>
+          </view>
+        </view>
+      </view>
+    </u-sticky>
     <u-toast ref="uToast"></u-toast>
     <!-- 聊天内容 -->
     <!-- scroll-view滚动视图  scroll-into-view设置哪个方向可滚动，则在哪个方向滚动到该元素 -->
@@ -22,7 +45,7 @@
             v-if="item.openid && item.openid != this.openid"
           >
             <!-- 头像 -->
-            <image class="user-img" :src="otherhead"></image>
+            <image class="user-img" :src="item.avatarUrl"></image>
             <!-- 发送的内容是文字时 -->
             <view class="message">
               <view class="msg-text">{{ item.message }}</view>
@@ -66,13 +89,7 @@ export default {
       // 我的头像
       myhead: uni.getStorageSync("avatarUrl"),
       //聊天记录
-      msg: [
-        // {
-        //   openid: "or6L_5JOa9Heqt15s1QSjEBs97to",
-        //   time: "2023-04-01 19:00:00",
-        //   message: "我爱你",
-        // },
-      ],
+      msg: [],
       //高度控制 滚动到该元素
       scrollToView: "",
       //高度控制
@@ -83,28 +100,23 @@ export default {
     };
   },
   onLoad(e) {
-    console.log("touxiang", uni.getStorageSync("avatarUrl"));
+    // if (e.postId) {
+    //   this.postId = e.postId;
+    // }
+    // console.log("postid", e.postId);
+    // console.log("touxiang", uni.getStorageSync("avatarUrl"));
     if (!uni.getStorageSync("openid")) {
       uni.navigateTo({
         url: "/pages/login/login",
       });
     }
-    console.log("openid", this.openid);
-    console.log(e.postId);
+    // console.log("openid", this.openid);
+    // console.log(e.postId);
     this.postId = String(e.postId);
-    console.log(this.postId);
-    // this.roomId = JSON.parse(e.roomId);
-    // let tit = JSON.parse(e.name);
-    // uni.setNavigationBarTitle({
-    //   title: tit,
-    // });
-    // this.getperson();
-    // this.getPrevious();
+    console.log("postid", this.postId);
     this.openSocket();
   },
-  onShow() {
-    // this.getPrevious();
-  },
+  onShow() {},
   onUnload() {
     this.closeSocket();
   },
@@ -125,29 +137,29 @@ export default {
       });
     },
     // 获取聊天者信息
-    getperson() {
-      uni.request({
-        url: "https://api.yuleng.top:38088/api/room-members",
-        data: {
-          roomId: this.roomId,
-          type: 1,
-        },
-        header: {
-          token: uni.getStorageSync("token"),
-        },
-        success: (res) => {
-          // console.log(res,'person')
-          res.data.data.roomMembers.forEach((item) => {
-            if (item.id == this.meId) {
-              this.myhead = item.headPicUrl;
-            } else {
-              this.otherhead = item.headPicUrl;
-              this.otherId = item.id;
-            }
-          });
-        },
-      });
-    },
+    // getperson() {
+    //   uni.request({
+    //     url: "https://api.yuleng.top:38088/api/room-members",
+    //     data: {
+    //       roomId: this.roomId,
+    //       type: 1,
+    //     },
+    //     header: {
+    //       token: uni.getStorageSync("token"),
+    //     },
+    //     success: (res) => {
+    //       // console.log(res,'person')
+    //       res.data.data.roomMembers.forEach((item) => {
+    //         if (item.id == this.meId) {
+    //           this.myhead = item.headPicUrl;
+    //         } else {
+    //           this.otherhead = item.headPicUrl;
+    //           this.otherId = item.id;
+    //         }
+    //       });
+    //     },
+    //   });
+    // },
     // 获取历史记录
     // getPrevious() {
     //   uni.request({
@@ -170,21 +182,21 @@ export default {
     //   });
     // },
     //清空未读消息数
-    clearMesssage() {
-      uni.request({
-        url:
-          "https://api.yuleng.top:38088/api/message-read?roomId=" +
-          this.roomId +
-          "&type=1",
-        method: "POST",
-        header: {
-          token: uni.getStorageSync("token"),
-        },
-        success: (res) => {
-          console.log("清空消息成功");
-        },
-      });
-    },
+    // clearMesssage() {
+    //   uni.request({
+    //     url:
+    //       "https://api.yuleng.top:38088/api/message-read?roomId=" +
+    //       this.roomId +
+    //       "&type=1",
+    //     method: "POST",
+    //     header: {
+    //       token: uni.getStorageSync("token"),
+    //     },
+    //     success: (res) => {
+    //       console.log("清空消息成功");
+    //     },
+    //   });
+    // },
     // 转换时间
     changeTime(date) {
       return dateTime.dateTime1(date);
@@ -267,10 +279,11 @@ export default {
           // ) {
           // console.log("进来了");
           if (res.data.openid == "system") {
+            console.log(res.data);
             console.log(res.data.message);
             let openid = res.data.message.split(",")[0];
             console.log("openid", openid);
-            openid = "用户" + openid + "驾到";
+            openid = openid + "";
             this.showToast({
               type: "success",
               message: openid,
@@ -314,6 +327,33 @@ export default {
 </script>
 
 <style lang="scss">
+.peopleNum {
+  font-size: 14px;
+  color: #9a9a9a;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2vh;
+  padding-left: 6vw;
+  padding-right: 3vw;
+  padding-bottom: 2vh;
+}
+.botton {
+  width: 45vw;
+  display: flex;
+  justify-content: space-between;
+}
+::v-deep .u-button {
+  width: 25vw !important;
+  height: 4vh !important;
+}
+// .botton {
+//   height: 100rpx;
+//   justify-content: space-between;
+//   display: flex;
+// }
 page {
   height: 100%;
 }

@@ -56,13 +56,43 @@ export default {
     });
   },
   methods: {
+    uploadFilePromise() {
+      return new Promise((resolve, reject) => {
+        let a = uni.uploadFile({
+          url: "https://www.haorui.xyz/control/user/info/updateAvatar", // 仅为示例，非真实的接口地址
+          filePath: this.avatarUrl,
+          name: "avatar",
+          formData: {
+            openId: uni.getStorageSync("openid"),
+          },
+          header: {
+            "content-type": "application/json",
+          },
+          success: (res) => {
+            res = JSON.parse(res.data);
+            console.log("上传头像", res);
+            uni.setStorage({
+              key: "avatarUrl",
+              data: res.message,
+            });
+            console.log("上传头像", uni.getStorageSync("avatarUrl"));
+            // console.log(res.data.files[0].fileUrl);
+            // this.headPicUrl = res.data.files[0].fileUrl;
+            setTimeout(() => {
+              resolve(res);
+            }, 1000);
+          },
+        });
+      });
+    },
     async saveInfo() {
       console.log(this.userName, this.avatarUrl);
+      this.uploadFilePromise();
       if (this.userName && this.avatarUrl != this.defaultAvatarUrl) {
         let data = {
           openId: uni.getStorageSync("openid"),
           userName: this.userName,
-          avatarUrl: this.avatarUrl,
+          // avatarUrl: this.avatarUrl,
         };
         const { data: res } = await request(
           "/control/user/info/update",
@@ -75,10 +105,7 @@ export default {
           key: "userName",
           data: this.userName,
         });
-        uni.setStorage({
-          key: "avatarUrl",
-          data: this.avatarUrl,
-        });
+
         this.showToast({
           type: "success",
           message: "保存成功",

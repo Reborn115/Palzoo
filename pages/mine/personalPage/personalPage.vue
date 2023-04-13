@@ -5,7 +5,8 @@
         :showLoading="true"
         :src="src"
         width="100vw"
-        height="28vh"
+        height="26vh"
+        mode="widthFix"
       ></u--image>
     </view>
     <view class="body">
@@ -17,9 +18,9 @@
               duration="450"
               :lazy-load="true"
               :showLoading="true"
-              :src="avatorurl"
-              width="80px"
-              height="80px"
+              :src="info.avatarUrl"
+              width="70px"
+              height="70px"
               @click="click"
               shape="circle"
             ></u--image>
@@ -27,6 +28,14 @@
           <view class="text">
             <text class="nametext">{{ info.username }}</text>
             <text class="schooltext">天津理工大学</text>
+          </view>
+          <view class="icon">
+            <u-icon
+              name="edit-pen-fill"
+              color="#2979ff"
+              size="28"
+              @click="goEdit()"
+            ></u-icon>
           </view>
         </view>
         <view class="post">
@@ -75,17 +84,17 @@ export default {
   data() {
     return {
       info: {},
-      src: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
+      src: "https://s2.loli.net/2023/04/12/EbPUytJdOrRB86g.png",
       avatorurl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
       name: "肥肥鲨",
       school: "天津理工大学",
       openid: uni.getStorageSync("openid"),
       userId: "0",
       tips: [
-        {
-          gotime: "2023-01-05 17:00",
-          category: "运动",
-        },
+        // {
+        //   gotime: "2023-01-05 17:00",
+        //   category: "运动",
+        // },
       ],
     };
   },
@@ -94,6 +103,11 @@ export default {
     this.getPost();
   },
   methods: {
+    goEdit() {
+      uni.navigateTo({
+        url: "/pages/mine/personalPage/editInfo/editInfo",
+      });
+    },
     async getInfo() {
       let openId = String(this.openid);
       const { data: res } = await request(
@@ -122,6 +136,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.icon {
+  margin-left: 10vw;
+  display: flex;
+  align-items: center;
+}
 .time {
   margin-left: 2vw;
   font-size: 15px;
@@ -212,8 +231,8 @@ export default {
   // margin-left: 5vw;
   width: 100vw;
   position: relative;
-  top: -8vh;
-  height: 60vh;
+  top: -10vh;
+  // height: 60vh;
   // background-color: aqua;
   .header {
     display: flex;
@@ -221,14 +240,10 @@ export default {
     justify-content: space-around;
     // align-items: center;
     border-radius: 10px;
-    height: 25vh;
+    height: 28vh;
     width: 90vw;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
     box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.2);
   }
 }
-// .bgimg {
-//   height: 20vh;
-//   background-image: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg";
-// }
 </style>

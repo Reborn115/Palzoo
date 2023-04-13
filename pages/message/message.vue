@@ -5,12 +5,12 @@
         <uni-list-chat
           v-for="(item, index) in list"
           :key="index"
-          @click="gochat(item.roomId, item.type, item.name)"
+          @click="gochat(item.postId)"
           :clickable="true"
           :avatar-circle="true"
-          :title="item.name"
-          :avatar="item.headPicUrl"
-          :note="item.latestMessage"
+          :title="item.authorName"
+          :avatar="item.avatarUrl"
+          :note="item.content"
           :time="item.time"
           :badge-text="item.num"
         ></uni-list-chat>
@@ -21,36 +21,24 @@
 
 <script>
 import request from "@/request/request.js";
-import dateTime from "./dateTime";
 export default {
   data() {
     return {
+      avatarUrl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
       list: [
-        {
-          name: "肥肥鲨",
-          headPicUrl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
-          latestMessage: "我爱你",
-          time: "2023-01-05 14:00",
-          num: "6",
-          openid: uni.getStorageSync("openid"),
-        },
+        // {
+        //   authorName: "一起吃饭",
+        //   avatarUrl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
+        //   content: "我爱你",
+        //   postId: "1212112",
+        // },
       ],
       timer: "",
     };
   },
-  // onShow() {
-  //   console.log(this.openid);
-  //   this.getMessageList();
-  //   // this.timer = setInterval(() => {
-  //   //   this.getMessageList();
-  //   // }, 2000);
-  // },
   onLoad(e) {
     console.log(this.openid);
     this.getMessageList();
-    // this.timer = setInterval(() => {
-    //   this.getMessageList();
-    // }, 2000);
   },
   onUnload() {
     clearInterval(this.timer);
@@ -69,44 +57,11 @@ export default {
       this.list = res;
       console.log(this.list);
     },
-    gochat(roomId, type, name) {
-      if (type == 1) {
-        clearInterval(this.timer);
-        uni.navigateTo({
-          url:
-            "/pages/chat/chat?roomId=" +
-            JSON.stringify(roomId) +
-            "&name=" +
-            JSON.stringify(name),
-        });
-      } else {
-        clearInterval(this.timer);
-        uni.navigateTo({
-          url:
-            "/pages/chat/chatgroup?roomId=" +
-            JSON.stringify(roomId) +
-            "&name=" +
-            JSON.stringify(name),
-        });
-      }
+    gochat(postId) {
+      uni.navigateTo({
+        url: "/pages/message/chatroom/chatroom?postId=" + postId,
+      });
     },
-    // getMessageList() {
-    //   uni.request({
-    //     url: "https://api.yuleng.top:38088/api/message-num-list",
-    //     header: {
-    //       token: uni.getStorageSync("token"), //自定义请求头信息
-    //     },
-    //     success: (res) => {
-    //       console.log(res);
-    //       res.data.data.messageNumList.forEach((item, index) => {
-    //         let time = item.time * 1000;
-    //         item.time = dateTime.dateTime(time);
-    //       });
-    //       this.list = res.data.data.messageNumList;
-    //       console.log(this.list);
-    //     },
-    //   });
-    // },
     addchat() {
       uni.navigateTo({
         url: "/pages/chat/addchat/addchat",
@@ -116,8 +71,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-// .all {
-//   padding-top: 170rpx;
-// }
-</style>
+<style scoped lang="scss"></style>
