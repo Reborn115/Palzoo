@@ -59,11 +59,12 @@ export default {
     uploadFilePromise() {
       return new Promise((resolve, reject) => {
         let a = uni.uploadFile({
-          url: "https://www.haorui.xyz/control/user/info/updateAvatar", // 仅为示例，非真实的接口地址
+          url: "http://www.haorui.xyz:9598/upload/user", // 仅为示例，非真实的接口地址
           filePath: this.avatarUrl,
-          name: "avatar",
+          name: "file",
           formData: {
-            openId: uni.getStorageSync("openid"),
+            openid: uni.getStorageSync("openid"),
+            username: this.userName,
           },
           header: {
             "content-type": "application/json",
@@ -88,32 +89,32 @@ export default {
     async saveInfo() {
       console.log(this.userName, this.avatarUrl);
       this.uploadFilePromise();
-      if (this.userName && this.avatarUrl != this.defaultAvatarUrl) {
-        let data = {
-          openId: uni.getStorageSync("openid"),
-          userName: this.userName,
-          // avatarUrl: this.avatarUrl,
-        };
-        const { data: res } = await request(
-          "/control/user/info/update",
-          "POST",
-          data
-        );
-        console.log(res);
+      // if (this.userName && this.avatarUrl != this.defaultAvatarUrl) {
+      //   let data = {
+      //     openId: uni.getStorageSync("openid"),
+      //     userName: this.userName,
+      //     // avatarUrl: this.avatarUrl,
+      //   };
+      //   const { data: res } = await request(
+      //     "/control/user/info/update",
+      //     "POST",
+      //     data
+      //   );
+      //   console.log(res);
 
-        uni.setStorage({
-          key: "userName",
-          data: this.userName,
-        });
+      uni.setStorage({
+        key: "userName",
+        data: this.userName,
+      });
 
-        this.showToast({
-          type: "success",
-          message: "保存成功",
-          url: "/pages/index/index",
-        });
-      } else {
-        console.log("没进来");
-      }
+      this.showToast({
+        type: "success",
+        message: "保存成功",
+        url: "/pages/index/index",
+      });
+      // } else {
+      //   console.log("没进来");
+      // }
     },
     getNickname(e) {
       console.log("nickname", e.detail.value);

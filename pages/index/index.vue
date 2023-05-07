@@ -1,116 +1,78 @@
 <template>
   <view class="content">
-    <view class="add" v-if="this.nowTime >= 1681365619000">
-      <u--image
-        :lazy-load="true"
-        :showLoading="true"
-        width="55px"
-        height="55px"
-        src="https://s2.loli.net/2023/04/05/TNSu8oipV5LJqAr.png"
-        shape="circle"
-        @click="pageJump('/pages/index/publish/publish')"
-      ></u--image>
+    <view class="horn">
+      <u-notice-bar
+        :text="hornText"
+        mode="closable"
+        color="#8DC26F"
+      ></u-notice-bar>
     </view>
-    <view class="tabs">
-      <u-sticky bgColor="linear-gradient(to right, #12D8FA, #a5fecb)">
-        <u-tabs
-          @change="change"
-          :current="currentTabIndex"
-          :list="tabslist"
-          lineColor="white"
-          :activeStyle="{
-            color: 'white',
-            fontWeight: 'bold',
-            transform: 'scale(1.05)',
-          }"
-          :inactiveStyle="{
-            color: 'white',
-            transform: 'scale(1)',
-          }"
-          itemStyle="height: 34px;"
-        >
-          <template #right>
-            <!-- <div class="line" /> -->
-          </template>
-        </u-tabs>
-      </u-sticky>
+    <view class="swiper">
+      <u-swiper
+        keyName="image"
+        :list="swiperList"
+        previousMargin="30"
+        nextMargin="30"
+        circular
+        :autoplay="true"
+        radius="5"
+        bgColor="#ffffff"
+        indicator
+        indicatorMode="line"
+      ></u-swiper>
     </view>
-    <view class="list">
-      <uni-datetime-picker
-        v-model="datetimerange"
-        type="datetimerange"
-        rangeSeparator="至"
-        @change="timeChange()"
-      />
-      <view v-if="currentTabIndex == 0">
-        <uni-card
-          :is-shadow="false"
-          class="container"
-          v-for="(item, index) in tips"
-          :key="index"
-        >
-          <view
-            class="info"
-            @click="pageJump('/pages/index/paldetails/paldetails', item.postId)"
+    <view class="timeandaddress">
+      <uni-card :is-shadow="false">
+        <view class="info">
+          <view>
+            <text class="title">营业时间：</text>
+            <text>{{ timeandaddress.time }}</text>
+          </view>
+
+          <view>
+            <text class="title">地址：</text>
+            <text>{{ timeandaddress.address }}</text>
+          </view>
+        </view>
+        <view class="pickbotton">
+          <u-button
+            text="预定"
+            color="linear-gradient(to bottom, #76b852, #8DC26F)"
+            shape="circle"
+            @click="pageJump('/pages/index/subscribe/subscribe')"
+          ></u-button>
+        </view>
+      </uni-card>
+    </view>
+    <view class="description">
+      <view class="venues"> 场地介绍 </view>
+      <view class="collapse">
+        <u-collapse @change="change" @close="close" @open="open" accordion>
+          <u-collapse-item
+            :title="item.type"
+            v-for="(item, index) in roomInfoList"
+            :key="index"
           >
-            <view class="title">
-              <h3>{{ item.title }}</h3>
+            <view class="type"> {{ item.type }}</view>
+            <view class="brief">{{ "——（" + item.brief + "）" }} </view>
+            <view class="gap">简介</view>
+            <view class="more">{{ item.more }}</view>
+            <view class="gap">留影</view>
+            <view class="images">
+              <u-album
+                :urls="item.images"
+                maxCount="999"
+                rowCount="2"
+                multipleSize="36vw"
+                singleSize="73vw"
+              ></u-album>
             </view>
-            <view>
-              <text class="sex">{{ item.gender }}</text>
-              <text>{{ "人数：" + item.number }}</text>
-            </view>
-            <view>
-              <text>开始时间：{{ item.goTime }}</text>
-            </view>
-            <view class="tags">
-              <u-tag
-                :text="item.category"
-                type="info"
-                shape="circle"
-                plain
-                borderColor="#EFEFEF"
-              ></u-tag>
-              <!-- <u-tag
-                :text="item.categoryNext"
-                type="info"
-                shape="circle"
-                plain
-                borderColor="#EFEFEF"
-              ></u-tag> -->
-              <!-- <u-tag
-                text="标签"
-                type="info"
-                shape="circle"
-                plain
-                borderColor="#EFEFEF"
-              ></u-tag> -->
-            </view>
-          </view>
-          <view class="pickbotton">
-            <u-button
-              text="Pal一下"
-              color="linear-gradient(to bottom, #29A7FE, #62DFE5)"
-              shape="circle"
-              @click="pageJump('/pages/message/chatroom/chatroom', item.postId)"
-            ></u-button>
-          </view>
-        </uni-card>
+            <view class="gap">开场送</view>
+            <view class="send"> {{ item.send }} </view>
+          </u-collapse-item>
+        </u-collapse>
       </view>
-      <view v-if="currentTabIndex == 1"> </view>
-      <view v-if="currentTabIndex == 2"> </view>
-      <view v-if="currentTabIndex == 3"> </view>
-      <view v-if="currentTabIndex == 4"> </view>
-      <view v-if="currentTabIndex == 5"> </view>
-      <view v-if="currentTabIndex == 6"> </view>
     </view>
-    <view class="loading"
-      ><u-loadmore
-        :status="status"
-        loadingText="努力加载中,先喝杯茶"
-        color="#909399"
-      ></u-loadmore
-    ></view>
   </view>
 </template>
 
@@ -121,150 +83,127 @@ export default {
   components: { uText },
   data() {
     return {
-      searchForm: {
-        lastTime: null,
-        startTime: null,
-        endTime: null,
-        category: null,
-        categoryNext: null,
-        gender: null,
-        number: null,
+      roomInfoList: [],
+      urls1: [
+        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/b6kghbOZ",
+        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/n1Eq5fF7",
+        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/pfNFm17f",
+        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/uC0QLGXw",
+      ],
+      timeandaddress: {
+        time: "09:：00-21:00",
+        address:
+          "天津市西青区精武镇团泊大道中华武林园内凯伦田元智能体育休闲营地",
       },
-      nowTime: null,
-      status: "loadmore",
-      datetimerange: null,
-      currentTabIndex: 0,
-      tips: [],
-      tabslist: [
+      current: 0,
+      swiperList: [
         {
-          name: "全部",
+          image: "https://cdn.uviewui.com/uview/swiper/swiper1.png",
+          type: "image",
         },
         {
-          name: "运动",
+          image: "https://s2.loli.net/2023/04/17/guR53vfPWOXYTCc.jpg",
+          type: "image",
         },
         {
-          name: "美食",
-        },
-        {
-          name: "出行",
-        },
-        {
-          name: "学习",
-        },
-        {
-          name: "其他",
+          image: "https://s2.loli.net/2023/04/17/guR53vfPWOXYTCc.jpg",
+          type: "image",
         },
       ],
+      hornText:
+        "天津市西青区精武镇团泊大道中华武林园内凯伦田元智能体育休闲营地现接受预订",
     };
   },
-  onReachBottom() {
-    this.status = "loading";
-    console.log("到底了");
-    this.getTopic();
-  },
-  onPullDownRefresh() {
-    console.log("refresh");
-    setTimeout(function () {
-      uni.stopPullDownRefresh();
-      this.getTopic();
-    }, 1000);
-  },
+  onReachBottom() {},
+  onPullDownRefresh() {},
   onLoad() {
-    this.nowTime = Date.parse(new Date());
-    console.log("nowtime", this.nowTime);
-    this.searchForm.category = null;
-    this.searchForm.lastTime = null;
-    console.log("openid", uni.getStorageSync("openid"));
-    this.getTopic();
+    this.getRoomInfo();
   },
-  // onShow() {
-  //   console.log(this.searchForm.lastTime);
-  //   this.getTopic();
-  // },
   methods: {
-    async getTopic() {
-      let data = {
-        lastTime: this.searchForm.lastTime,
-        startTime: this.searchForm.startTime,
-        endTime: this.searchForm.endTime,
-        screen: {
-          category: this.searchForm.category,
-          numberMin: null,
-          gender: null,
-          numberMax: null,
-        },
-      };
-      const { data: res } = await request(
-        "/controller/topic/search",
-        "POST",
-        data
-      );
-      if (!this.searchForm.lastTime) {
-        this.tips = res.waterfalls;
-        this.searchForm.lastTime = res.nextTime;
-      } else {
-        if (res.nextTime == this.searchForm.lastTime) {
-          this.tips.push(...res.waterfalls);
-          this.status = "loadmore";
-          this.searchForm.lastTime = res.nextTime;
-        }
-      }
-
-      console.log(res.waterfalls);
-      console.log(this.searchForm.lastTime);
-    },
-    pageJump(url, postId) {
-      console.log(String(postId));
-      if (postId) {
-        url = url + "?postId=" + postId;
-      }
+    pageJump(url) {
       uni.navigateTo({
         url: url,
       });
     },
-    timeChange() {
-      this.searchForm.startTime = this.datetimerange[0];
-      this.searchForm.endTime = this.datetimerange[1];
-      this.getTopic();
+    async getRoomInfo() {
+      const { data: res } = await request("/show/rooms", "GET");
+      console.log(res);
+      this.roomInfoList = res.roomInfoList;
     },
-    change(index) {
-      if (index.name == "全部") {
-        this.searchForm.category = null;
-        this.searchForm.lastTime = null;
-      } else {
-        this.searchForm.category = index.name;
-        this.searchForm.lastTime = null;
-      }
-
-      // console.log("这是index", index);
-      // console.log("这是category", this.searchForm.category);
-      // if (this.currentTabIndex != index.index) {
-      //   this.currentTabIndex = index.index;
-      //   // console.log(this.currentTabIndex);
-      // }
-      this.getTopic();
+    open(e) {
+      // console.log('open', e)
+    },
+    close(e) {
+      // console.log('close', e)
+    },
+    change(e) {
+      // console.log('change', e)
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.loading {
-  margin-top: 4vh;
-  margin-bottom: 4vh;
+.images {
+  display: flex;
+  justify-content: center;
 }
-.add {
-  box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.2);
-  border-radius: 100%;
-  height: 55px;
-  width: 55px;
+
+.gap {
+  padding-left: 2vw;
+  line-height: 5vh;
+  height: 5vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  background-color: #8dc26f;
+  color: white;
+}
+::v-deep .u-gap {
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+.brief {
+  margin-top: 1vh;
+}
+.type {
+  font-size: 18px;
+  font-weight: bold;
+}
+.collapse {
+  margin-top: 3vh;
+  margin-left: 4vw;
+  align-items: center;
+  width: 85vw;
+}
+.venues {
+  margin-top: 2vh;
+  margin-left: 5vw;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}
+.description {
+  border-radius: 10px;
+  padding-bottom: 4vh;
   background-color: white;
-  z-index: 100;
-  position: fixed;
-  top: 30px;
-  right: 5px;
-  top: 88vh;
-  left: 80vw;
+  margin-top: 4vh;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  width: 93vw;
+}
+.swiper {
+  margin-top: 3vh;
+  height: 20vh;
+  width: 90vw;
+}
+.info {
+  width: 60vw;
+  height: 18vh;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  font-size: 13px;
 }
 ::v-deep .uni-card__content {
   display: flex !important;
@@ -277,37 +216,21 @@ export default {
   height: 18vh;
 }
 ::v-deep .u-button {
-  width: 25vw !important;
+  width: 20vw !important;
   height: 5vh !important;
 }
-.container {
-  display: flex;
-}
-::v-deep .u-tag {
-  margin-right: 3vw !important;
-  // width: 10vw !important;
-  // align-items: center !important;
-  // box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.2) !important;
-}
-.sex {
-  margin-right: 3vw;
-}
-.tags {
-  display: flex;
-}
-.info {
-  width: 50vw;
-  height: 18vh;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  font-size: 13px;
-  color: #9a9a9a;
-}
 .title {
-  font-size: 17px;
+  font-size: 14px;
   font-weight: bold;
   color: black;
+}
+.timeandaddress {
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 22vh;
+  width: 100vw;
 }
 ::v-deep .uni-card {
   // display: flex;
@@ -317,33 +240,15 @@ export default {
   // padding: 0 !important;
   border-radius: 10px;
   height: 21vh;
-  width: 83.5vw;
+  width: 88vw;
   box-shadow: 5px 5px 8px #bebebe !important;
 }
-.list {
-  width: 90vw;
+.horn {
   margin-top: 2vh;
+  width: 90vw;
 }
-.tabs {
-  width: 100vw;
-  background-image: linear-gradient(to bottom, #3bcaf2, #95f5d0) !important;
-  padding-left: 4vw;
-  display: flex;
-  // justify-content: center;
-  align-items: center;
-  flex-direction: row;
-}
-/* 竖线 */
-.line {
-  float: left;
-  width: 0.1em;
-  height: 1.5em;
-  margin-right: 1em;
-  margin-left: 1em;
-  background: #f3f3f3;
-}
-
 .content {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

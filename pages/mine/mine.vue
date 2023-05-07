@@ -16,14 +16,14 @@
       </view>
       <view class="text">
         <text class="nametext">{{ info.username }}</text>
-        <text class="schooltext">{{ school }}</text>
+        <text class="schooltext">19179755936</text>
       </view>
     </view>
     <view class="select">
       <view class="upselect">
         <u-cell-group>
           <u-cell
-            title="个人主页"
+            title="我的订单"
             isLink
             url="pages/mine/personalPage/personalPage"
           >
@@ -36,18 +36,14 @@
         </u-cell-group>
       </view>
       <view class="downselect">
-        <u-cell
-          title="我的关注与黑名单"
-          isLink
-          url="pages/mine/myConcern/myConcern"
-        >
+        <u-cell title="常见问题" isLink url="pages/mine/myConcern/myConcern">
           <image
             slot="icon"
             src="https://cdn.uviewui.com/uview/demo/picker/2.png"
             mode="widthFix"
           ></image>
         </u-cell>
-        <u-cell title="我的组队" isLink url="pages/mine/myTeam/myTeam">
+        <u-cell title="预约说明" isLink url="pages/mine/myTeam/myTeam">
           <image
             slot="icon"
             src="https://cdn.uviewui.com/uview/demo/picker/2.png"
@@ -64,18 +60,19 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
-      info: {},
-      name: "肥肥鲨",
-      school: "天津理工大学",
-      avatorurl: "https://s2.loli.net/2022/12/31/peTCRsJmFIq7jMc.jpg",
+      info: {
+        avatarUrl: uni.getStorageSync("avatarUrl"),
+        username: uni.getStorageSync("username"),
+      },
+
       userId: "0",
     };
   },
   onLoad() {
-    this.getInfo();
+    // this.getInfo();
   },
   onShow() {
-    this.getInfo();
+    // this.getInfo();
   },
   methods: {
     async getInfo() {

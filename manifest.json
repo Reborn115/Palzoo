@@ -1,6 +1,6 @@
 {
-    "name" : "Palzoo",
-    "appid" : "__UNI__3D17C96",
+    "name" : "KarenGo",
+    "appid" : "__UNI__D61C3D0",
     "description" : "一个用来找搭子的小程序",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -59,7 +59,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx9a3b6323352027a1",
+        "appid" : "wx51d5eeba73d732de",
         "setting" : {
             "urlCheck" : false,
             "minified" : true

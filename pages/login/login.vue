@@ -88,11 +88,48 @@ export default {
     }
   },
   methods: {
+    async getUserInfo() {
+      let data = {
+        openid: uni.getStorageSync("openid"),
+      };
+      const { data: res } = await request("/get/avatar", "GET", data);
+      // console.log(res);
+
+      uni.setStorage({
+        key: "avatarUrl",
+        data: res.avatarUrl,
+      });
+      uni.setStorage({
+        key: "username",
+        data: res.username,
+      });
+      // console.log(uni.getStorageSync("avatarUrl"));
+      // console.log(uni.getStorageSync("username"));
+      if (res) {
+        if (uni.getStorageSync("avatarUrl") && uni.getStorageSync("username")) {
+          this.showToast({
+            type: "success",
+            message: "登录成功",
+            url: "/pages/index/index",
+          });
+        } else {
+          this.showToast({
+            type: "success",
+            message: "登录成功",
+          });
+          this.goUploud();
+        }
+      }
+    },
+    goHome() {
+      uni.switchTab({
+        url: "/pages/index/index",
+      });
+    },
     change(e) {
       this.isPrivacy = !this.isPrivacy;
     },
     goUploud() {
-      console.log("555");
       uni.navigateTo({
         url: "/pages/login/upload/upload",
       });
@@ -108,27 +145,6 @@ export default {
         },
       });
     },
-    // appLoginWx() {
-    //   // 获取用户信息
-    //   // 注意 getUserProfile 不支持在事件中使用异步操作
-    //   // 否则会触发错误：{errMsg: "getUserProfile:fail can only be invoked by user TAP gesture."}
-    //   uni.getUserProfile({
-    //     lang: "zh_CN",
-    //     desc: "获取用户信息",
-    //     success: (userInfo) => {
-    //       console.log(userInfo, "userInfo");
-    //       // uni.login({
-    //       //   provider: "weixin",
-    //       //   success: (loginInfo) => {
-    //       //     console.log(loginInfo, "loginInfo");
-    //       //   },
-    //       // });
-    //     },
-    //     fail: (err) => {
-    //       console.log(err, "err");
-    //     },
-    //   });
-    // },
     async login(code) {
       if (!this.isPrivacy) {
         this.showToast({
@@ -136,7 +152,7 @@ export default {
           message: "请同意隐私政策",
         });
       } else {
-        const { data: res } = await request("/control/sign/in", "POST", {
+        const { data: res } = await request("/sign/in", "POST", {
           code: code,
         });
         uni.setStorage({
@@ -147,35 +163,10 @@ export default {
           key: "openid",
           data: res.openid,
         });
-        uni.setStorage({
-          key: "avatarUrl",
-          data: res.avatarUrl,
-        });
-        uni.setStorage({
-          key: "username",
-          data: res.username,
-        });
-        console.log("touxiang", uni.getStorageSync("avatarUrl"));
         console.log(res);
-        // this.appLoginWx();
-        if (
-          res.username == null ||
-          res.avatarUrl == "https://www.haorui.xyz/palzoo/Head.png"
-        ) {
-          this.showToast({
-            type: "success",
-            message: "登录成功",
-          });
-          this.goUploud();
-        } else {
-          this.showToast({
-            type: "success",
-            message: "登录成功",
-            url: "/pages/index/index",
-          });
+        if (res) {
+          this.getUserInfo();
         }
-
-        console.log(res);
       }
     },
   },

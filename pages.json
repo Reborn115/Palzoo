@@ -7,27 +7,51 @@
 			}
 	},
 	"pages": [
-		// {
-        //     "path" : "pages/mine/personalPage/personalPage",
-        //     "style" :                                                                                    
-        //     {
-        //         "navigationBarTitleText": "个人主页",
-        //         "enablePullDownRefresh": false,
-		// 		"navigationBarBackgroundColor": "#FFFFFF"
-        //     }
-            
-        // },
-		{
+        {
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "Palzoo",
+				"navigationBarTitleText": "KarenGo",
 				"navigationBarTextStyle":"white",
-				"navigationBarBackgroundColor": "#3BCAF2",
+				"navigationBarBackgroundColor": "#8DC26F",
 				"enablePullDownRefresh": false
 			}
 		},
-		{
+        {
             "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "登录",
+                "navigationBarTextStyle":"white",
+				"navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        
+        {
+            "path" : "pages/myOrder/myOrder",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的订单",
+                "navigationBarTextStyle":"white",
+				"navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        {
+            "path" : "pages/impression/impression",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "商家印象",
+                "navigationBarTextStyle":"white",
+				"navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+        {
+            "path" : "pages/index/subscribe/subscribe",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
@@ -35,22 +59,52 @@
             }
             
         },
+		// {
+		// 	"path": "pages/index/index",
+		// 	"style": {
+		// 		"navigationBarTitleText": "KarenGo",
+		// 		"navigationBarTextStyle":"white",
+		// 		"navigationBarBackgroundColor": "#8DC26F",
+		// 		"enablePullDownRefresh": false
+		// 	}
+		// },
+		// {
+        //     "path" : "pages/login/login",
+        //     "style" :                                                                                    
+        //     {
+        //         "navigationBarTitleText": "登录",
+        //         "navigationBarTextStyle":"white",
+		// 		"navigationBarBackgroundColor": "#8DC26F",
+        //         "enablePullDownRefresh": false
+        //     }
+            
+        // },
+		/* {
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "KarenGo",
+				"navigationBarTextStyle":"white",
+				"navigationBarBackgroundColor": "#8DC26F",
+				"enablePullDownRefresh": false
+			}
+		}, */
+		
 		
 		{
 			"path": "pages/message/message",
 			"style": {
 				"navigationBarTitleText": "Palzoo",
 				"navigationBarTextStyle":"white",
-				"navigationBarBackgroundColor": "#3BCAF2",
+				"navigationBarBackgroundColor": "#8DC26F",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/mine/mine",
 			"style": {
-				"navigationBarTitleText": "Palzoo",
+				"navigationBarTitleText": "我的",
 				"navigationBarTextStyle":"white",
-				"navigationBarBackgroundColor": "#3BCAF2",
+				"navigationBarBackgroundColor": "#8DC26F",
 				"enablePullDownRefresh": false
 			}
 		}
@@ -133,6 +187,46 @@
             }
             
         }
+        // ,{
+        //     "path" : "pages/impression/impression",
+        //     "style" :                                                                                    
+        //     {
+        //         "navigationBarTitleText": "商家印象",
+        //         "navigationBarTextStyle":"white",
+		// 		"navigationBarBackgroundColor": "#8DC26F",
+        //         "enablePullDownRefresh": false
+        //     }
+            
+        // }
+        // ,{
+        //     "path" : "pages/myOrder/myOrder",
+        //     "style" :                                                                                    
+        //     {
+        //         "navigationBarTitleText": "我的订单",
+        //         "navigationBarTextStyle":"white",
+		// 		"navigationBarBackgroundColor": "#8DC26F",
+        //         "enablePullDownRefresh": false
+        //     }
+            
+        // }
+        // ,{
+        //     "path" : "pages/index/subscribe/subscribe",
+        //     "style" :                                                                                    
+        //     {
+        //         "navigationBarTitleText": "",
+        //         "enablePullDownRefresh": false
+        //     }
+            
+        // }
+        ,{
+            "path" : "pages/myOrder/placeOrder/placeOrder",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -152,10 +246,15 @@
 				"selectedIconPath": "static/home2.png",
 				"text": "主页"
 			},{
-				"pagePath": "pages/message/message",
-				"iconPath": "static/message1.png",
-				"selectedIconPath": "static/message2.png",
-				"text": "消息"
+				"pagePath": "pages/impression/impression",
+				"iconPath": "static/impression1.png",
+				"selectedIconPath": "static/impression2.png",
+				"text": "商家印象"
+			},{
+				"pagePath": "pages/myOrder/myOrder",
+				"iconPath": "static/myOrder1.png",
+				"selectedIconPath": "static/myOrder2.png",
+				"text": "我的订单"
 			},{
 				"pagePath": "pages/mine/mine",
 				"iconPath": "static/person1.png",
