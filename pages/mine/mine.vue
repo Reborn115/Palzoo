@@ -1,5 +1,15 @@
 <template>
   <view>
+    <u-toast ref="uToast"></u-toast>
+    <u-modal
+      :content="content"
+      :show="isConfirm"
+      showCancelButton
+      closeOnClickOverlay
+      @confirm="confirm"
+      @cancel="cancel"
+      @close="close"
+    ></u-modal>
     <view class="header">
       <view class="avator">
         <u--image
@@ -25,7 +35,8 @@
           <u-cell
             title="我的订单"
             isLink
-            url="pages/mine/personalPage/personalPage"
+            url="pages/myOrder/myOrder"
+            linkType="switchTab"
           >
             <image
               slot="icon"
@@ -36,14 +47,40 @@
         </u-cell-group>
       </view>
       <view class="downselect">
-        <u-cell title="常见问题" isLink url="pages/mine/myConcern/myConcern">
+        <u-cell
+          title="常见问题"
+          isLink
+          url="pages/mine/commonProblem/commonProblem"
+        >
           <image
             slot="icon"
             src="https://cdn.uviewui.com/uview/demo/picker/2.png"
             mode="widthFix"
           ></image>
         </u-cell>
-        <u-cell title="预约说明" isLink url="pages/mine/myTeam/myTeam">
+        <u-cell
+          title="预约说明"
+          isLink
+          url="pages/mine/appointmentInstructions/appointmentInstructions"
+        >
+          <image
+            slot="icon"
+            src="https://cdn.uviewui.com/uview/demo/picker/2.png"
+            mode="widthFix"
+          ></image>
+        </u-cell>
+        <u-cell
+          title="联系客服"
+          isLink
+          url="pages/mine/contactService/contactService"
+        >
+          <image
+            slot="icon"
+            src="https://cdn.uviewui.com/uview/demo/picker/2.png"
+            mode="widthFix"
+          ></image>
+        </u-cell>
+        <u-cell title="退出登录" @click="showConfirm" isLink>
           <image
             slot="icon"
             src="https://cdn.uviewui.com/uview/demo/picker/2.png"
@@ -60,6 +97,8 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
+      content: "确定要退出登录吗？",
+      isConfirm: false,
       info: {
         avatarUrl: uni.getStorageSync("avatarUrl"),
         username: uni.getStorageSync("username"),
@@ -75,6 +114,49 @@ export default {
     // this.getInfo();
   },
   methods: {
+    showToast(params) {
+      this.$refs.uToast.show({
+        ...params,
+        complete() {
+          params.url &&
+            uni.navigateTo({
+              url: params.url,
+            });
+        },
+      });
+    },
+    // async logout() {
+    //   let data = {
+    //     openid: uni.getStorageSync("openid"),
+    //   };
+    //   const res = await request("/sign/off", "POST", data);
+    //   this.isConfirm = false;
+    //   if (res.code == "00000") {
+    //     this.showToast({
+    //       type: "success",
+    //       message: res.message,
+    //       url: "/pages/login/login",
+    //     });
+    //   } else {
+    //     this.showToast({
+    //       type: "error",
+    //       message: res.message,
+    //     });
+    //   }
+    //   console.log("res", res);
+    // },
+    cancel() {
+      this.isConfirm = false;
+    },
+    confirm() {
+      uni.removeStorageSync("openid");
+      uni.navigateTo({
+        url: "/pages/login/login",
+      });
+    },
+    showConfirm() {
+      this.isConfirm = true;
+    },
     async getInfo() {
       let openId = uni.getStorageSync("openid");
       console.log(openId);
@@ -107,7 +189,8 @@ export default {
   //   justify-content: center;
   align-items: center;
   height: 20vh;
-  background-image: linear-gradient(to bottom, #3bcaf2, #95f5d0) !important;
+  background-color: #8dc26f;
+  // background-image: linear-gradient(to bottom, #8dc26f, white) !important;
   .avator {
     margin-left: 8vw;
   }

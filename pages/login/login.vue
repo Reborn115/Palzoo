@@ -10,13 +10,13 @@
     ></u--image>
     <u-button
       type="success"
-      text="微信登录"
+      text="微信用户登录"
       @click="login(this.code)"
     ></u-button>
     <u-button
       type="primary"
-      text="账号密码登录(测试)"
-      @click="login(this.code)"
+      text="管理员登录"
+      @click="goAdministrator"
     ></u-button>
     <view class="privacy">
       <uni-data-checkbox
@@ -27,8 +27,8 @@
       ></uni-data-checkbox>
       <text>已阅读并同意</text>
       <uni-link
-        href="https://www.yuleng.top/app-huimao-yszc/"
-        text="Palzoo隐私协议"
+        href=""
+        text="凯伦田元隐私协议"
         color="#CF6A1B"
         font-weight="bold"
         showUnderLine="false"
@@ -48,7 +48,8 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
-      imgUrl: "https://s2.loli.net/2023/04/11/Xflh5kKy3WqdVGI.png",
+      imgUrl:
+        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%89%AF%E9%A1%B5.png",
       title: "Hello",
       code: uni.getStorageSync("code"),
       range: [{ value: 1, text: "" }],
@@ -88,6 +89,11 @@ export default {
     }
   },
   methods: {
+    goAdministrator() {
+      uni.navigateTo({
+        url: "/pages/login/administratorLogin/administratorLogin",
+      });
+    },
     async getUserInfo() {
       let data = {
         openid: uni.getStorageSync("openid"),

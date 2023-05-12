@@ -16,9 +16,9 @@
         circular
         :autoplay="true"
         radius="5"
-        bgColor="#ffffff"
         indicator
         indicatorMode="line"
+        bgColor="#f8f8f8"
       ></u-swiper>
     </view>
     <view class="timeandaddress">
@@ -46,6 +46,22 @@
     </view>
     <view class="description">
       <view class="venues"> 场地介绍 </view>
+      <view class="priceList">
+        <u-album
+          :urls="priceList"
+          maxCount="999"
+          rowCount="2"
+          multipleSize="36vw"
+          singleSize="85vw"
+        ></u-album>
+        <!-- <u--image
+          :showLoading="true"
+          :src="priceList"
+          width="85vw"
+          height="26vh"
+          mode="widthFix"
+        ></u--image> -->
+      </view>
       <view class="collapse">
         <u-collapse @change="change" @close="close" @open="open" accordion>
           <u-collapse-item
@@ -67,8 +83,8 @@
                 singleSize="73vw"
               ></u-album>
             </view>
-            <view class="gap">开场送</view>
-            <view class="send"> {{ item.send }} </view>
+            <!-- <view class="gap">开场送</view>
+            <view class="send"> {{ item.send }} </view> -->
           </u-collapse-item>
         </u-collapse>
       </view>
@@ -83,33 +99,18 @@ export default {
   components: { uText },
   data() {
     return {
-      roomInfoList: [],
-      urls1: [
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/b6kghbOZ",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/n1Eq5fF7",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/pfNFm17f",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/uC0QLGXw",
+      priceList: [
+        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD2.jpeg",
       ],
+      roomInfoList: [],
+      urls1: [],
       timeandaddress: {
         time: "09:：00-21:00",
         address:
           "天津市西青区精武镇团泊大道中华武林园内凯伦田元智能体育休闲营地",
       },
       current: 0,
-      swiperList: [
-        {
-          image: "https://cdn.uviewui.com/uview/swiper/swiper1.png",
-          type: "image",
-        },
-        {
-          image: "https://s2.loli.net/2023/04/17/guR53vfPWOXYTCc.jpg",
-          type: "image",
-        },
-        {
-          image: "https://s2.loli.net/2023/04/17/guR53vfPWOXYTCc.jpg",
-          type: "image",
-        },
-      ],
+      swiperList: [],
       hornText:
         "天津市西青区精武镇团泊大道中华武林园内凯伦田元智能体育休闲营地现接受预订",
     };
@@ -118,8 +119,20 @@ export default {
   onPullDownRefresh() {},
   onLoad() {
     this.getRoomInfo();
+    this.getSwiper();
+    this.getHornText();
   },
   methods: {
+    async getHornText() {
+      const { data: res } = await request("/broadcast/show", "GET");
+      console.log(res);
+      this.hornText = res.hornText;
+    },
+    async getSwiper() {
+      const { data: res } = await request("/map/queue", "GET");
+      console.log(res);
+      this.swiperList = res.mapQueueList;
+    },
     pageJump(url) {
       uni.navigateTo({
         url: url,
@@ -144,6 +157,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.priceList {
+  margin-top: 1vh;
+  display: flex;
+  justify-content: center;
+}
 .images {
   display: flex;
   justify-content: center;

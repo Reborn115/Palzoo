@@ -5,7 +5,12 @@ const BASE_URL = "http://www.haorui.xyz:9598";
 const request = (url, method, data, header = {}) => {
   return new Promise((resolve, reject) => {
     console.log("openid", uni.getStorageSync("openid"));
-    if (url != "/show/rooms" && url != "/sign/in" && url != "/login") {
+    if (
+      url != "/show/rooms" &&
+      url != "/sign/in" &&
+      url != "/login" &&
+      url != "/map/queue"
+    ) {
       if (!uni.getStorageSync("openid")) {
         uni.navigateTo({
           url: "/pages/login/login",

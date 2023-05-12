@@ -76,17 +76,17 @@
             <view class="timeBotton">
               <u-button
                 type="success"
-                :plain="timeState.morning ? false : true"
+                :plain="timeState[0] ? false : true"
                 text="上午场 09:00-15:00"
                 size="small"
-                @click="clickTime(1)"
+                @click="clickTime(0, 1)"
               ></u-button>
               <u-button
                 type="success"
-                :plain="timeState.noon ? false : true"
+                :plain="timeState[1] ? false : true"
                 text="下午场 15:30-21:30"
                 size="small"
-                @click="clickTime(2)"
+                @click="clickTime(1, 0)"
               ></u-button>
             </view>
           </view>
@@ -114,26 +114,26 @@
                 </template>
               </u-tabs>
               <view class="description">
-                <view class="type"> 这些年房车烧烤营地</view>
+                <view class="type"> {{ activeInfo.type }}</view>
                 <view class="brief"
-                  >{{ "——（" + "适合6-10人，配备空调卫生间" + "）" }}
+                  >{{ "——（" + activeInfo.brief + "）" }}
                 </view>
                 <view class="gap">简介</view>
-                <view class="more"
-                  >场地包含：VIP房车（内含独立卫生间、四人卡座、空调、日式榻榻米）、小院内含桌椅水池上下水等等</view
-                >
+                <view class="more">{{ activeInfo.more }}</view>
                 <view class="gap">留影</view>
                 <view class="images">
                   <u-album
-                    :urls="urls"
+                    :urls="activeInfo.images"
                     maxCount="999"
                     rowCount="2"
                     multipleSize="36vw"
                     singleSize="73vw"
                   ></u-album>
                 </view>
-                <view class="gap">开场送</view>
-                <view class="send"> 营地露营开场就送：入营烧烤福袋 </view>
+                <!-- <view class="gap">开场送</view>
+                <view class="send">
+                  {{ activeInfo.send }}
+                </view> -->
                 <view class="gap">场地选择</view>
                 <view class="choosePosition">
                   <view>请根据平面图预订场地，场地选定后，不支持现场更改</view>
@@ -147,11 +147,11 @@
                       :plain="item.locationState ? false : true"
                       :text="item.location"
                       size="small"
-                      @click="clickLocation(index)"
+                      @click="clickLocation(item, index)"
                     ></u-button>
                     <!-- <u-button
                       type="success"
-                      :plain="timeState.noon ? false : true"
+                      :plain="timeState[1] ? false : true"
                       text="中 13:00-17:00"
                       size="small"
                       @click="clickTime(2)"
@@ -205,6 +205,10 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
+      isLocation: false,
+      price: "",
+      roomId: "",
+      activeInfo: {},
       isDate: false,
       urls: [],
       tabslist: [],
@@ -217,29 +221,88 @@ export default {
       roomInfoList: [],
       roomStatusList: [],
       currentTabIndex: 0,
-      bgImg: "https://s2.loli.net/2023/04/12/EbPUytJdOrRB86g.png",
+      bgImg:
+        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E9%A6%96%E9%A1%B5%E5%9B%BE.png",
       date: "",
       isActive: true,
-      timeState: {
-        morning: false,
-        noon: false,
-      },
+      timeState: [false, false],
     };
   },
   onLoad() {
     this.getRoomList();
+    this.getRoomInfo();
     // this.getRoomStatus(1);
   },
   methods: {
-    clickLocation(index) {
-      this.roomStatusList[index].locationState =
-        !this.roomStatusList[index].locationState;
+    async generateOrder() {
+      let data = {
+        openid: uni.getStorageSync("openid"),
+        roomId: this.roomId,
+        price: this.price,
+        startTime: this.startTime,
+        endTime: this.endTime,
+      };
+      const res = await request("/order/room", "POST", data);
+      if (res.code == "00000") {
+        this.showToast({
+          type: "success",
+          message: res.message,
+          url: "/pages/myOrder/placeOrder/placeOrder",
+        });
+      }
+      console.log("res", res);
+    },
+    async getRoomInfo() {
+      const { data: res } = await request("/show/rooms", "GET");
+      console.log(res);
+      this.roomInfoList = res.roomInfoList;
+      this.activeInfo = this.roomInfoList[0];
+    },
+    clickLocation(item, index) {
+      console.log(item);
+      console.log(this.isLocation, this.roomStatusList[index].locationState);
+      if (!this.isLocation && !this.roomStatusList[index].locationState) {
+        this.roomStatusList[index].locationState = true;
+        this.isLocation = true;
+        this.roomId = item.roomId;
+      } else {
+        if (this.isLocation && this.roomStatusList[index].locationState) {
+          this.roomStatusList[index].locationState = false;
+          this.isLocation = false;
+          this.roomId = null;
+        } else {
+          if (this.isLocation && !this.roomStatusList[index].locationState) {
+            this.showToast({
+              type: "error",
+              message: "只能选择一个场地",
+            });
+          }
+        }
+      }
+      console.log(this.activeInfo);
+      this.price = this.activeInfo.price;
+      console.log(this.price);
     },
     confirmClose() {
       this.showConfirm = false;
+      this.generateOrder();
     },
     confirmShow() {
-      this.showConfirm = true;
+      if (!this.date) {
+        this.showToast({
+          type: "error",
+          message: "请先选择日期",
+        });
+      } else {
+        if (!this.endTime || !this.startTime) {
+          this.showToast({
+            type: "error",
+            message: "请先选择预约时间段",
+          });
+        } else {
+          this.showConfirm = true;
+        }
+      }
     },
     popClose() {
       this.show = false;
@@ -263,38 +326,80 @@ export default {
       // console.log(this);
       this.roomStatusList = res.roomLocalList;
       console.log(this.roomStatusList);
+      // console.log(this.timeState[0], this.timeState[1]);
+      if (!this.timeState[0] && !this.timeState[1]) {
+        this.roomStatusList = [];
+      }
     },
     changeTab(index) {
-      // console.log("这是index", index);
-
-      // console.log("这是index.typeId", index.id);
+      this.timeState[0] = false;
+      this.timeState[1] = false;
+      this.startTime = "";
+      this.endTime = "";
+      this.date = null;
+      this.isLocation = false;
+      this.getRoomStatus();
+      // this.getRoomInfo();
       this.typeId = index.id;
+      this.activeInfo = this.roomInfoList[index.id - 1];
       // console.log("这是typeId", this.typeId);
       if (this.currentTabIndex != index.id) {
         this.currentTabIndex = index.id - 1;
         // console.log(this.currentTabIndex);
       }
     },
-    clickTime(order) {
+    clickTime(click, another) {
       if (this.isDate) {
-        if (order == 1) {
-          this.timeState.morning = !this.timeState.morning;
-          this.startTime = this.date + 32400000;
-          this.endTime = this.date + 46800000;
-          // console.log(this.startTime);
-          // console.log(this.endTime);
+        if (this.timeState[0] && this.timeState[1]) {
+          this.timeState[click] = false;
+          if (click == 0) {
+            this.startTime = this.date + 55800000;
+            this.getRoomStatus();
+          } else {
+            this.endTime = this.date + 54000000;
+            this.getRoomStatus();
+          }
+        } else {
+          if (!this.timeState[0] && !this.timeState[1]) {
+            this.timeState[click] = true;
+            if (click == 0) {
+              this.startTime = this.date + 32400000;
+              this.endTime = this.date + 54000000;
+              this.getRoomStatus();
+            } else {
+              this.startTime = this.date + 55800000;
+              this.endTime = this.date + 77400000;
+              this.getRoomStatus();
+            }
+          } else {
+            if (this.timeState[0] && !this.timeState[1]) {
+              if (click == 0) {
+                this.startTime = "";
+                this.endTime = "";
+                this.timeState[0] = false;
+                this.getRoomStatus();
+              } else {
+                this.startTime = this.date + 32400000;
+                this.endTime = this.date + 77400000;
+                this.timeState[1] = true;
+                this.getRoomStatus();
+              }
+            }
+            if (!this.timeState[0] && this.timeState[1]) {
+              if (click == 0) {
+                this.startTime = this.date + 32400000;
+                this.endTime = this.date + 77400000;
+                this.timeState[0] = true;
+                this.getRoomStatus();
+              } else {
+                this.startTime = "";
+                this.endTime = "";
+                this.timeState[1] = false;
+                this.getRoomStatus();
+              }
+            }
+          }
         }
-        if (order == 2) {
-          this.timeState.noon = !this.timeState.noon;
-          this.startTime = this.date + 46800000;
-          this.endTime = this.date + 61200000;
-        }
-        if (order == 3) {
-          this.timeState.night = !this.timeState.night;
-          this.startTime = this.date + 61200000;
-          this.endTime = this.date + 75600000;
-        }
-        this.getRoomStatus();
       } else {
         this.showToast({
           type: "error",
@@ -311,7 +416,7 @@ export default {
         ...params,
         complete() {
           params.url &&
-            uni.switchTab({
+            uni.navigateTo({
               url: params.url,
             });
         },
@@ -448,7 +553,7 @@ export default {
   // margin-left: 5vw;
   width: 100vw;
   position: relative;
-  top: -10vh;
+  top: -5vh;
   //   background-color: white;
   .main {
     padding-bottom: 3vh;

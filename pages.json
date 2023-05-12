@@ -2,7 +2,7 @@
 	"easycom": {
 			"autoscan": true,
 			"custom": {
-				// uni-ui 规则如下配置
+				
 				"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
 			}
 	},
@@ -10,7 +10,7 @@
         {
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "KarenGo",
+				"navigationBarTitleText": "凯伦田元",
 				"navigationBarTextStyle":"white",
 				"navigationBarBackgroundColor": "#8DC26F",
 				"enablePullDownRefresh": false
@@ -54,51 +54,13 @@
             "path" : "pages/index/subscribe/subscribe",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "预订场地",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "navigationBarTextStyle":"white",
                 "enablePullDownRefresh": false
             }
             
         },
-		// {
-		// 	"path": "pages/index/index",
-		// 	"style": {
-		// 		"navigationBarTitleText": "KarenGo",
-		// 		"navigationBarTextStyle":"white",
-		// 		"navigationBarBackgroundColor": "#8DC26F",
-		// 		"enablePullDownRefresh": false
-		// 	}
-		// },
-		// {
-        //     "path" : "pages/login/login",
-        //     "style" :                                                                                    
-        //     {
-        //         "navigationBarTitleText": "登录",
-        //         "navigationBarTextStyle":"white",
-		// 		"navigationBarBackgroundColor": "#8DC26F",
-        //         "enablePullDownRefresh": false
-        //     }
-            
-        // },
-		/* {
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "KarenGo",
-				"navigationBarTextStyle":"white",
-				"navigationBarBackgroundColor": "#8DC26F",
-				"enablePullDownRefresh": false
-			}
-		}, */
-		
-		
-		{
-			"path": "pages/message/message",
-			"style": {
-				"navigationBarTitleText": "Palzoo",
-				"navigationBarTextStyle":"white",
-				"navigationBarBackgroundColor": "#8DC26F",
-				"enablePullDownRefresh": false
-			}
-		},
 		{
 			"path": "pages/mine/mine",
 			"style": {
@@ -108,121 +70,69 @@
 				"enablePullDownRefresh": false
 			}
 		}
-	    
         
-        ,{
-            "path" : "pages/index/publish/publish",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "发布组队",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#FFFFFF"
-            }
-            
-        }
-        ,{
-            "path" : "pages/mine/personalPage/personalPage",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "个人主页",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#FFFFFF"
-            }
-            
-        }
-        ,{
-            "path" : "pages/mine/myConcern/myConcern",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的好友",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#FFFFFF"
-            }
-            
-        }
-        ,{
-            "path" : "pages/mine/myTeam/myTeam",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的组队",
-                "enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#FFFFFF"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/paldetails/paldetails",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "pal详情",
-                "enablePullDownRefresh": false
-				
-            }
-            
-        }
-        ,{
-            "path" : "pages/message/chatroom/chatroom",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "聊天室",
-                "enablePullDownRefresh": false
-            }
-            
-        }
         ,{
             "path" : "pages/login/upload/upload",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "完善用户信息",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
                 "enablePullDownRefresh": false
             }
             
         } 
         ,{
-            "path" : "pages/mine/personalPage/editInfo/editInfo",
+            "path" : "pages/myOrder/placeOrder/placeOrder",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "编辑资料",
+                "navigationBarTitleText": "订单支付",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
                 "enablePullDownRefresh": false
             }
             
         }
-        // ,{
-        //     "path" : "pages/impression/impression",
-        //     "style" :                                                                                    
-        //     {
-        //         "navigationBarTitleText": "商家印象",
-        //         "navigationBarTextStyle":"white",
-		// 		"navigationBarBackgroundColor": "#8DC26F",
-        //         "enablePullDownRefresh": false
-        //     }
-            
-        // }
-        // ,{
-        //     "path" : "pages/myOrder/myOrder",
-        //     "style" :                                                                                    
-        //     {
-        //         "navigationBarTitleText": "我的订单",
-        //         "navigationBarTextStyle":"white",
-		// 		"navigationBarBackgroundColor": "#8DC26F",
-        //         "enablePullDownRefresh": false
-        //     }
-            
-        // }
-        // ,{
-        //     "path" : "pages/index/subscribe/subscribe",
-        //     "style" :                                                                                    
-        //     {
-        //         "navigationBarTitleText": "",
-        //         "enablePullDownRefresh": false
-        //     }
-            
-        // }
         ,{
-            "path" : "pages/myOrder/placeOrder/placeOrder",
+            "path" : "pages/mine/commonProblem/commonProblem",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "常见问题",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/appointmentInstructions/appointmentInstructions",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "预约说明",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/mine/contactService/contactService",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "联系客服",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/login/administratorLogin/administratorLogin",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "客服登录",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
                 "enablePullDownRefresh": false
             }
             
@@ -234,7 +144,7 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
-	// 配置tabbar导航栏
+	
 	"tabBar": {
 		"borderStyle": "black",
 		"selectedColor": "#62DFE5",
