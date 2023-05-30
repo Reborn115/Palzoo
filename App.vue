@@ -1,7 +1,5 @@
 <script>
-export default {
-  
-};
+export default {};
 </script>
 
 <style>
@@ -13,4 +11,10 @@ page {
 <style lang="scss" scoped>
 @import "@/uni_modules/uview-plus/index.scss";
 /*每个页面公共css */
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
 </style>

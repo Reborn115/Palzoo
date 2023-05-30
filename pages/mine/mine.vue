@@ -26,7 +26,7 @@
       </view>
       <view class="text">
         <text class="nametext">{{ info.username }}</text>
-        <text class="schooltext">19179755936</text>
+        <!-- <text class="schooltext">19179755936</text> -->
       </view>
     </view>
     <view class="select">
@@ -70,7 +70,7 @@
           ></image>
         </u-cell>
         <u-cell
-          title="联系客服"
+          title="关于开发者"
           isLink
           url="pages/mine/contactService/contactService"
         >
@@ -107,11 +107,11 @@ export default {
       userId: "0",
     };
   },
-  onLoad() {
-    // this.getInfo();
-  },
+  // onLoad() {
+  //   this.getInfo();
+  // },
   onShow() {
-    // this.getInfo();
+    this.getInfo();
   },
   methods: {
     showToast(params) {
@@ -149,6 +149,7 @@ export default {
       this.isConfirm = false;
     },
     confirm() {
+      this.isConfirm = false;
       uni.removeStorageSync("openid");
       uni.navigateTo({
         url: "/pages/login/login",
@@ -158,18 +159,12 @@ export default {
       this.isConfirm = true;
     },
     async getInfo() {
-      let openId = uni.getStorageSync("openid");
-      console.log(openId);
       const { data: res } = await request(
-        "/control/user/info/get" +
-          "?openId=" +
-          openId +
-          "&userId=" +
-          this.userId,
+        "/get/avatar" + "?openid=" + uni.getStorageSync("openid"),
         "GET"
       );
       this.info = res;
-      console.log(this.info);
+      // console.log(this.info);
     },
   },
 };

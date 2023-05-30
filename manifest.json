@@ -48,7 +48,7 @@
             "sdkConfigs" : {
                 "oauth" : {
                     "weixin" : {
-                        "appid" : "wx9a3b6323352027a1",
+                        "appid" : "wx59b1fc4a64d36349",
                         "UniversalLinks" : ""
                     }
                 }
@@ -59,7 +59,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx51d5eeba73d732de",
+        "appid" : "wx59b1fc4a64d36349",
         "setting" : {
             "urlCheck" : false,
             "minified" : true

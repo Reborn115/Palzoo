@@ -1,5 +1,6 @@
 <template class="body">
   <view class="container">
+    <u-toast ref="uToast"></u-toast>
     <u--image
       mode="widthFix"
       :showLoading="true"
@@ -44,7 +45,7 @@ export default {
   data() {
     return {
       imgUrl:
-        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%89%AF%E9%A1%B5.png",
+        "https://img.haorui.xyz/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%89%AF%E9%A1%B5.png",
       formData: {
         account: "",
         password: "",
@@ -88,6 +89,17 @@ export default {
   },
   onLoad() {},
   methods: {
+    showToast(params) {
+      this.$refs.uToast.show({
+        ...params,
+        complete() {
+          params.url &&
+            uni.navigateTo({
+              url: params.url,
+            });
+        },
+      });
+    },
     async login() {
       const { data: res } = await request("/login", "POST", {
         username: this.formData.account,
@@ -102,7 +114,7 @@ export default {
         this.showToast({
           type: "success",
           message: "登录成功",
-          url: "/pages/index/index",
+          url: "/pages/administrators/index/index",
         });
       }
     },

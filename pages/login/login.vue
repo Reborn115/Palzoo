@@ -48,46 +48,78 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
+      isPrivacy: false,
       imgUrl:
-        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%89%AF%E9%A1%B5.png",
+        "https://img.haorui.xyz/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%89%AF%E9%A1%B5.png",
       title: "Hello",
       code: uni.getStorageSync("code"),
       range: [{ value: 1, text: "" }],
+      timer1: "",
+      timer2: "",
     };
   },
-
-  onLoad() {
-    console.log("App Show");
-    // 从storage获取登录信息，没有则需要登录
-    let tokenInfo = uni.getStorageSync("tokenInfo");
-    let hasValidToken = false;
-    if (tokenInfo) {
-      let time = new Date().valueOf();
-      // 存储时间小于token失效时间，才是有效token, 否则重新授权
-      hasValidToken = time - tokenInfo.timestamp < 3600 * 24 * 1000;
-    }
-    if (!hasValidToken) {
-      // 调用小程序登录api
-      uni.login({
-        provider: "weixin",
-        success: (wxInfo) => {
-          uni.setStorage({
-            key: "code",
-            data: wxInfo.code,
-          });
-          this.code = wxInfo.code;
-          console.log("获得code", wxInfo.code);
-          console.log("修改code", this.code);
-        },
-      });
-    }
+  onShow() {
     if (!uni.getStorageSync("openid")) {
       this.showToast({
         type: "error",
         message: "登录后体验更多功能",
       });
     }
+    // 从storage获取登录信息，没有则需要登录
+    // let tokenInfo = uni.getStorageSync("tokenInfo");
+    // let hasValidToken = false;
+    // if (tokenInfo) {
+    //   let time = new Date().valueOf();
+    //   // 存储时间小于token失效时间，才是有效token, 否则重新授权
+    //   hasValidToken = time - tokenInfo.timestamp < 3600 * 24 * 1000;
+    // }
+    // if (!hasValidToken) {
+    // 调用小程序登录api
+    uni.login({
+      provider: "weixin",
+      success: (wxInfo) => {
+        uni.setStorage({
+          key: "code",
+          data: wxInfo.code,
+        });
+        this.code = wxInfo.code;
+        // console.log("获得code", wxInfo.code);
+        // console.log("修改code", this.code);
+      },
+    });
+    // }
   },
+  // onLoad() {
+  //   if (!uni.getStorageSync("openid")) {
+  //     this.showToast({
+  //       type: "error",
+  //       message: "登录后体验更多功能",
+  //     });
+  //   }
+  //   // 从storage获取登录信息，没有则需要登录
+  //   // let tokenInfo = uni.getStorageSync("tokenInfo");
+  //   // let hasValidToken = false;
+  //   // if (tokenInfo) {
+  //   //   let time = new Date().valueOf();
+  //   //   // 存储时间小于token失效时间，才是有效token, 否则重新授权
+  //   //   hasValidToken = time - tokenInfo.timestamp < 3600 * 24 * 1000;
+  //   // }
+  //   // if (!hasValidToken) {
+  //   // 调用小程序登录api
+  //   uni.login({
+  //     provider: "weixin",
+  //     success: (wxInfo) => {
+  //       uni.setStorage({
+  //         key: "code",
+  //         data: wxInfo.code,
+  //       });
+  //       this.code = wxInfo.code;
+  //       // console.log("获得code", wxInfo.code);
+  //       // console.log("修改code", this.code);
+  //     },
+  //   });
+  //   // }
+  // },
   methods: {
     goAdministrator() {
       uni.navigateTo({
@@ -95,12 +127,19 @@ export default {
       });
     },
     async getUserInfo() {
-      let data = {
-        openid: uni.getStorageSync("openid"),
-      };
-      const { data: res } = await request("/get/avatar", "GET", data);
-      // console.log(res);
+      // console.log("进来了");
 
+      // console.log(uni.getStorageSync("openid"));
+      const { data: res } = await request(
+        "/get/avatar" + "?openid=" + uni.getStorageSync("openid"),
+        "GET"
+      );
+      // let data = {
+      //   openid: uni.getStorageSync("openid"),
+      // };
+      // const { data: res } = await request("/get/avatar", "GET", data);
+      // console.log(res);
+      // console.log(res);
       uni.setStorage({
         key: "avatarUrl",
         data: res.avatarUrl,
@@ -112,19 +151,24 @@ export default {
       // console.log(uni.getStorageSync("avatarUrl"));
       // console.log(uni.getStorageSync("username"));
       if (res) {
-        if (uni.getStorageSync("avatarUrl") && uni.getStorageSync("username")) {
-          this.showToast({
-            type: "success",
-            message: "登录成功",
-            url: "/pages/index/index",
-          });
-        } else {
-          this.showToast({
-            type: "success",
-            message: "登录成功",
-          });
-          this.goUploud();
-        }
+        this.timer2 = setTimeout(() => {
+          if (
+            uni.getStorageSync("avatarUrl") &&
+            uni.getStorageSync("username")
+          ) {
+            this.showToast({
+              type: "success",
+              message: "登录成功",
+              url: "/pages/index/index",
+            });
+          } else {
+            this.showToast({
+              type: "success",
+              message: "登录成功,请填写用户信息",
+            });
+            this.goUploud();
+          }
+        }, 1000);
       }
     },
     goHome() {
@@ -158,20 +202,21 @@ export default {
           message: "请同意隐私政策",
         });
       } else {
-        const { data: res } = await request("/sign/in", "POST", {
+        const res = await request("/sign/in", "POST", {
           code: code,
         });
-        uni.setStorage({
-          key: "sessionKey",
-          data: res.sessionKey,
-        });
+        // console.log(res.data.openid);
         uni.setStorage({
           key: "openid",
-          data: res.openid,
+          data: res.data.openid,
         });
-        console.log(res);
-        if (res) {
-          this.getUserInfo();
+        // console.log("openid", uni.getStorageSync("openid"));
+        if (res.code == "00000") {
+          // this.isPrivacy = false;
+          // console.log("获取成功");
+          this.timer1 = setTimeout(() => {
+            this.getUserInfo();
+          }, 300);
         }
       }
     },

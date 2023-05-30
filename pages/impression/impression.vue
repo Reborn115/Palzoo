@@ -2,6 +2,7 @@
   <view class="container">
     <view class="tabs">
       <u-tabs
+        :scrollable="true"
         @change="changeTab"
         :current="currentTabIndex"
         :list="tabslist"
@@ -17,18 +18,18 @@
         }"
         itemStyle="height: 34px;"
       >
-        <template #right>
-          <!-- <div class="line" /> -->
-        </template>
       </u-tabs>
     </view>
+
     <view class="images">
+      <!-- <u-skeleton rows="4" :loading="loading" :title="false"> -->
       <u-album
         :urls="urls"
         maxCount="999"
         rowCount="2"
         multipleSize="40vw"
       ></u-album>
+      <!-- </u-skeleton> -->
     </view>
   </view>
 </template>
@@ -38,18 +39,14 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
-      urls: [
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/b6kghbOZ",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/n1Eq5fF7",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/pfNFm17f",
-        "http://rtk2m6fyw.hb-bkt.clouddn.com//集装箱/uC0QLGXw",
-      ],
+      loading: true,
+      urls: [""],
       tabslist: [],
       roomInfoList: [],
       currentTabIndex: 0,
     };
   },
-  onLoad() {
+  onShow() {
     this.getRoomList();
     this.getRoomInfo();
     // this.getRoomStatus(1);
@@ -61,24 +58,21 @@ export default {
       // console.log(this.urls);
     },
     async getRoomInfo() {
-      const { data: res } = await request("/show/rooms", "GET");
-      console.log(res);
-      this.roomInfoList = res.roomInfoList;
-      console.log("roomInfoList", this.roomInfoList);
+      this.roomInfoList = uni.getStorageSync("roomInfoList");
+      // const { data: res } = await request("/show/rooms", "GET");
+      // // console.log(res);
+      // this.roomInfoList = res.roomInfoList;
+      // // console.log("roomInfoList", this.roomInfoList);
       this.urls = this.roomInfoList[0].images;
+      // uni.$u.sleep(1000).then(() => {
+      //   this.loading = false;
+      // });
     },
     async getRoomList() {
       const { data: res } = await request("/list/type", "GET");
-      console.log(res);
+      // console.log(res);
       this.tabslist = res.typeNameList;
     },
-    // changeTab(index) {
-    //   console.log("这是index", index);
-    //   if (this.currentTabIndex != index.index) {
-    //     this.currentTabIndex = index.index;
-    //     console.log(this.currentTabIndex);
-    //   }
-    // },
   },
 };
 </script>
@@ -90,6 +84,12 @@ export default {
   margin-top: 2vh;
 }
 .container {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -97,7 +97,15 @@ export default {
   //   justify-content: center;
 }
 .tabs {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
   margin-top: 1vh;
-  width: 90vw;
+  width: 100%;
+  // display: flex;
+  // justify-content: space-around;
 }
 </style>

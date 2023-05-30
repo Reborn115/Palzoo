@@ -33,6 +33,10 @@
             <text class="title">地址：</text>
             <text>{{ timeandaddress.address }}</text>
           </view>
+          <view>
+            <text class="title">预约电话：</text>
+            <text>{{ timeandaddress.phone }}</text>
+          </view>
         </view>
         <view class="pickbotton">
           <u-button
@@ -77,7 +81,7 @@
             <view class="images">
               <u-album
                 :urls="item.images"
-                maxCount="999"
+                maxCount="2"
                 rowCount="2"
                 multipleSize="36vw"
                 singleSize="73vw"
@@ -100,14 +104,14 @@ export default {
   data() {
     return {
       priceList: [
-        "http://rtk2m6fyw.hb-bkt.clouddn.com/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD2.jpeg",
+        "https://img.haorui.xyz/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD2.jpeg",
       ],
       roomInfoList: [],
       urls1: [],
       timeandaddress: {
-        time: "09:：00-21:00",
-        address:
-          "天津市西青区精武镇团泊大道中华武林园内凯伦田元智能体育休闲营地",
+        time: "09:00-21:00",
+        address: "天津市西青区精武门中华武林园内",
+        phone: 15602015323,
       },
       current: 0,
       swiperList: [],
@@ -117,7 +121,12 @@ export default {
   },
   onReachBottom() {},
   onPullDownRefresh() {},
-  onLoad() {
+  // onLoad() {
+  //   this.getRoomInfo();
+  //   this.getSwiper();
+  //   this.getHornText();
+  // },
+  onShow() {
     this.getRoomInfo();
     this.getSwiper();
     this.getHornText();
@@ -125,12 +134,12 @@ export default {
   methods: {
     async getHornText() {
       const { data: res } = await request("/broadcast/show", "GET");
-      console.log(res);
+      // console.log(res);
       this.hornText = res.hornText;
     },
     async getSwiper() {
       const { data: res } = await request("/map/queue", "GET");
-      console.log(res);
+      // console.log(res);
       this.swiperList = res.mapQueueList;
     },
     pageJump(url) {
@@ -140,8 +149,12 @@ export default {
     },
     async getRoomInfo() {
       const { data: res } = await request("/show/rooms", "GET");
-      console.log(res);
+      // console.log(res);
       this.roomInfoList = res.roomInfoList;
+      uni.setStorage({
+        key: "roomInfoList",
+        data: res.roomInfoList,
+      });
     },
     open(e) {
       // console.log('open', e)
@@ -259,7 +272,7 @@ export default {
   border-radius: 10px;
   height: 21vh;
   width: 88vw;
-  box-shadow: 5px 5px 8px #bebebe !important;
+  // box-shadow: 5px 5px 8px #bebebe !important;
 }
 .horn {
   margin-top: 2vh;

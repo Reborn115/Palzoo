@@ -5,35 +5,21 @@
       :show="isRefund"
       showCancelButton
       closeOnClickOverlay
-      content="确定申请退款吗？"
+      content="确定同意退款吗？"
       @confirm="confirmRefund"
       @cancel="cancelRefund"
       @close="closeRefund"
     >
+      <u-toast ref="uToast1"></u-toast>
+      <view class="box">
+        <view class="title"> 输入退款金额： </view>
+        <uni-easyinput
+          type="text"
+          v-model="refund"
+          placeholder="请输入退款金额："
+        />
+      </view>
     </u-modal>
-    <view class="tabs">
-      <u-tabs
-        @change="changeTab"
-        :current="currentTabIndex"
-        :list="tabslist"
-        lineWidth="50"
-        lineColor="#8dc26f"
-        :activeStyle="{
-          color: '#8dc26f',
-          fontWeight: 'bold',
-          transform: 'scale(1.05)',
-        }"
-        :inactiveStyle="{
-          color: '#9A9A9A',
-          transform: 'scale(1)',
-        }"
-        itemStyle="height: 34px;padding-left: 8vw; padding-right: 8vw;"
-      >
-        <template #right>
-          <!-- <div class="line" /> -->
-        </template>
-      </u-tabs>
-    </view>
     <view class="empty">
       <u-empty
         mode="order"
@@ -42,7 +28,6 @@
       >
       </u-empty>
     </view>
-
     <view class="cardbox">
       <view class="card" v-for="(item, index) in orderInfoList" :key="index">
         <view class="line1">
@@ -50,7 +35,7 @@
             {{ "交易单号：" + item.payNo }}
           </view>
           <view class="payStatus">
-            {{ item.isPay == 1 ? "已支付" : "已申请退款" }}
+            {{ item.isPay == 1 ? "已支付" : "待退款" }}
           </view>
         </view>
         <view class="line2">
@@ -90,23 +75,22 @@
             {{ item.createTime }}
           </view>
           <view class="botton">
-            <u-button
+            <!-- <u-button
               @click="cancelOrder(item)"
               :type="success"
               :plain="true"
               text="取消订单"
               size="small"
               shape="circle"
-              :disabled="item.isPay ? true : false"
-            ></u-button>
+              :disabled="isPay ? true : false"
+            ></u-button> -->
             <u-button
               type="error"
               :plain="true"
-              text="申请退款"
+              text="同意退款"
               size="small"
               shape="circle"
               @click="showRefund(item)"
-              :disabled="item.isPay == 2 ? true : false"
             ></u-button>
           </view>
         </view>
@@ -116,37 +100,37 @@
 </template>
 
 <script>
-import request from "@/request/request.js";
+// import request from "@/request/request.js";
+import tokenRequest from "@/request/tokenRequest.js";
 export default {
   data() {
     return {
+      timer2: "",
+      timer1: "",
+      refund: 0,
       payNo: "",
-      isRefund: false,
-      status: 0,
       orderInfoList: [],
-      tabslist: [
-        {
-          name: "全部",
-        },
-        {
-          name: "已支付",
-        },
-        {
-          name: "已申请退款",
-        },
-      ],
-      currentTabIndex: 0,
+      isRefund: false,
     };
   },
+  onLoad() {
+    this.getOrder();
+  },
   methods: {
-    async refund() {
+    async refundEnd() {
       let data = {
         payNo: this.payNo,
+        refund: this.refund,
       };
-      const res = await request("/raise/refund", "POST", data);
+      const res = await tokenRequest("/refund/order", "POST", data);
       console.log("res", res);
       if (res.code == "00000") {
-        this.getOrder();
+        this.timer1 = setTimeout(() => {
+          this.getOrder();
+        }, 1000);
+        this.timer2 = setTimeout(() => {
+          this.getOrder();
+        }, 2000);
         this.showToast({
           type: "success",
           message: res.message,
@@ -159,8 +143,19 @@ export default {
       }
     },
     confirmRefund() {
-      this.isRefund = false;
-      this.refund();
+      console.log(this.payNo, this.refund);
+      const r = /^\+?[1-9][0-9]*$/; //正整数
+      if (!r.test(this.refund)) {
+        console.log("进来了");
+        this.showToast1({
+          type: "error",
+          message: "请输入正整数！",
+        });
+      } else {
+        this.isRefund = false;
+        this.refundEnd();
+      }
+
       console.log("confirm");
     },
     cancelRefund() {
@@ -174,51 +169,14 @@ export default {
     showRefund(item) {
       console.log(item);
       this.payNo = item.payNo;
-      console.log(this.payNo);
+      // this.refund = item.price;
+      console.log(this.payNo, this.refund);
       this.isRefund = true;
     },
-    async cancelOrder(item) {
-      console.log("取消内部", item);
-      let data = {
-        openid: uni.getStorageSync("openid"),
-        roomId: this.roomId,
-        price: this.price,
-        startTime: this.startTime,
-        endTime: this.endTime,
-      };
-
-      const res = await request("/close/order", "POST", data);
-      console.log("res", res);
-      if (res.code == "00000") {
-        this.showToast({
-          type: "success",
-          message: res.message,
-          // url: "/pages/index/subscribe/subscribe",
-        });
-      } else {
-        this.showToast({
-          type: "error",
-          message: res.message,
-        });
-      }
-    },
     async getOrder() {
-      const { data: res } = await request("/order/list", "POST", {
-        status: this.status,
-        openid: uni.getStorageSync("openid"),
-      });
-      // console.log(res);
+      const { data: res } = await tokenRequest("/list/refund", "GET");
+      console.log(res);
       this.orderInfoList = res.orderInfoList;
-      console.log(this.orderInfoList.length);
-    },
-    changeTab(index) {
-      // console.log("这是index", index);
-      if (this.currentTabIndex != index.index) {
-        this.currentTabIndex = index.index;
-        // console.log(this.currentTabIndex);
-        this.status = this.currentTabIndex;
-        this.getOrder();
-      }
     },
     showToast(params) {
       this.$refs.uToast.show({
@@ -231,20 +189,37 @@ export default {
         },
       });
     },
-  },
-  // onLoad() {
-  //   this.getOrder();
-  // },
-  onShow() {
-    this.getOrder();
+    showToast1(params) {
+      this.$refs.uToast1.show({
+        ...params,
+        complete() {
+          params.url &&
+            uni.navigateTo({
+              url: params.url,
+            });
+        },
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-// .empty {
-// padding-top: 10vh;
-// }
+.box {
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  margin-top: 3vh;
+  width: 90vw;
+  align-items: center;
+}
+.container {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  //   justify-content: center;
+}
 .cardbox {
   margin-top: 2vh;
 }
@@ -317,18 +292,5 @@ export default {
       color: gray;
     }
   }
-}
-.container {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  //   justify-content: center;
-}
-.tabs {
-  margin-top: 1vh;
-  width: 90vw;
-  display: flex;
-  justify-content: space-around;
 }
 </style>

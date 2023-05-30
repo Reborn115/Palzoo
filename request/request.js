@@ -1,15 +1,17 @@
 // const BASE_URL = "http://43.143.162.177:11500";
 // const BASE_URL = "https://www.haorui.xyz";
-const BASE_URL = "http://www.haorui.xyz:9598";
+const BASE_URL = "https://www.haorui.xyz";
 
 const request = (url, method, data, header = {}) => {
   return new Promise((resolve, reject) => {
-    console.log("openid", uni.getStorageSync("openid"));
+    // console.log("openid", uni.getStorageSync("openid"));
     if (
       url != "/show/rooms" &&
       url != "/sign/in" &&
       url != "/login" &&
-      url != "/map/queue"
+      url != "/map/queue" &&
+      url != "/broadcast/show" &&
+      url != "/list/type"
     ) {
       if (!uni.getStorageSync("openid")) {
         uni.navigateTo({

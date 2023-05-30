@@ -59,7 +59,7 @@ export default {
     uploadFilePromise() {
       return new Promise((resolve, reject) => {
         let a = uni.uploadFile({
-          url: "http://www.haorui.xyz:9598/upload/user", // 仅为示例，非真实的接口地址
+          url: "https://www.haorui.xyz/upload/user", // 仅为示例，非真实的接口地址
           filePath: this.avatarUrl,
           name: "file",
           formData: {
@@ -71,53 +71,39 @@ export default {
           },
           success: (res) => {
             res = JSON.parse(res.data);
-            console.log("上传头像", res);
+            // console.log("上传头像", res);
             uni.setStorage({
-              key: "avatarUrl",
-              data: res.message,
+              key: "userName",
+              data: this.userName,
             });
-            console.log("上传头像", uni.getStorageSync("avatarUrl"));
+
+            this.showToast({
+              type: "success",
+              message: res.message,
+              url: "/pages/index/index",
+            });
+            // console.log("上传头像", uni.getStorageSync("avatarUrl"));
             // console.log(res.data.files[0].fileUrl);
             // this.headPicUrl = res.data.files[0].fileUrl;
             setTimeout(() => {
               resolve(res);
-            }, 1000);
+            }, 300);
           },
         });
       });
     },
     async saveInfo() {
-      console.log(this.userName, this.avatarUrl);
-      this.uploadFilePromise();
-      // if (this.userName && this.avatarUrl != this.defaultAvatarUrl) {
-      //   let data = {
-      //     openId: uni.getStorageSync("openid"),
-      //     userName: this.userName,
-      //     // avatarUrl: this.avatarUrl,
-      //   };
-      //   const { data: res } = await request(
-      //     "/control/user/info/update",
-      //     "POST",
-      //     data
-      //   );
-      //   console.log(res);
-
-      uni.setStorage({
-        key: "userName",
-        data: this.userName,
-      });
-
-      this.showToast({
-        type: "success",
-        message: "保存成功",
-        url: "/pages/index/index",
-      });
-      // } else {
-      //   console.log("没进来");
-      // }
+      if (this.userName && this.avatarUrl != this.defaultAvatarUrl) {
+        this.uploadFilePromise();
+      } else {
+        this.showToast({
+          type: "error",
+          message: "请上传头像并设置用户名",
+        });
+      }
     },
     getNickname(e) {
-      console.log("nickname", e.detail.value);
+      // console.log("nickname", e.detail.value);
       this.userName = e.detail.value;
     },
     showToast(params) {
@@ -135,7 +121,7 @@ export default {
     onChooseAvatar(e) {
       const { avatarUrl } = e.detail;
       this.avatarUrl = avatarUrl;
-      console.log(avatarUrl);
+      // console.log(avatarUrl);
     },
   },
 };

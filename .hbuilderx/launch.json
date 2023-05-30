@@ -13,7 +13,7 @@
             "type" : "uniCloud"
         },
         {
-            "openVueDevtools" : false,
+            "openVueDevtools" : true,
             "type" : "uni-app:miniProgram"
         }
     ]

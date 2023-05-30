@@ -119,7 +119,7 @@
             "path" : "pages/mine/contactService/contactService",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "联系客服",
+                "navigationBarTitleText": "关于开发者",
                 "navigationBarTextStyle":"white",
                 "navigationBarBackgroundColor": "#8DC26F",
                 "enablePullDownRefresh": false
@@ -137,6 +137,117 @@
             }
             
         }
+        ,{
+            "path" : "pages/mine/commonProblem/problemDetail/problemDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "问题详情",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/index/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "管理员面板",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+                
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/bookingStatus/bookingStatus",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查看支付订单",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/uploadPictures/uploadPictures",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "上传宣传图片",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/addedVenue/addedVenue",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "新增场地类型",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/modifyBroadcast/modifyBroadcast",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "更新公告",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/uploadSwiper/uploadSwiper",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "上传轮播图",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/deleteVenue/deleteVenue",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "删除场地类型",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/newVenue/newVenue",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "新增和删除场地位置",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/administrators/refundOrders/refundOrders",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查看退款订单",
+                "navigationBarTextStyle":"white",
+                "navigationBarBackgroundColor": "#8DC26F",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -147,7 +258,7 @@
 	
 	"tabBar": {
 		"borderStyle": "black",
-		"selectedColor": "#62DFE5",
+		"selectedColor": "#8DC26F",
 		"color": "#444444",
 		"list": [
 			{
