@@ -79,26 +79,30 @@
               :clear-icon="false"
               v-model="date"
               @change="changeDate"
+              :start="dateMin"
             />
           </view>
           <view class="timePicker">
             <view class="title">预订时间段</view>
-            <view class="timeBotton">
-              <u-button
-                type="success"
-                :plain="timeState[0] ? false : true"
-                text="上午场 09:00-15:00"
-                size="small"
-                @click="clickTime(0, 1)"
-              ></u-button>
-              <u-button
-                type="success"
-                :plain="timeState[1] ? false : true"
-                text="下午场 15:30-21:30"
-                size="small"
-                @click="clickTime(1, 0)"
-              ></u-button>
-            </view>
+            <u-skeleton rows="4" :loading="loading" :title="false">
+              <view class="timeBotton">
+                <u-button
+                  type="success"
+                  :plain="timeState[0] ? false : true"
+                  text="上午场 09:00-15:00"
+                  size="small"
+                  @click="clickTime(0, 1)"
+                  :disabled="this.date + 54000000 < this.timestamp"
+                ></u-button>
+                <u-button
+                  type="success"
+                  :plain="timeState[1] ? false : true"
+                  text="下午场 15:30-21:30"
+                  size="small"
+                  @click="clickTime(1, 0)"
+                ></u-button>
+              </view>
+            </u-skeleton>
           </view>
           <view class="chooseSite">
             <view class="title">选择座位</view>
@@ -214,11 +218,13 @@ import request from "@/request/request.js";
 export default {
   data() {
     return {
+      dateMin: "",
+      timestamp: "",
       loading: true,
       activeTab: "",
       albumWidth: 0,
       priceList: [
-        "https://img.haorui.xyz/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD2.jpeg",
+        "https://img.haorui.xyz/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD/%E5%87%AF%E4%BC%A6%E7%94%B0%E5%9B%AD3.jpeg",
       ],
       paydata: {
         appId: "wx59b1fc4a64d36349",
@@ -265,14 +271,40 @@ export default {
     this.getRoomList();
     await this.getRoomInfo();
     this.getRoomStatus();
+    this.dateMin = this.dateFormat("YYYY-mm-dd HH:MM", new Date());
+    console.log(this.dateMin);
     this.timeState[0] = false;
     this.timeState[1] = false;
     this.startTime = "";
     this.endTime = "";
+    this.timestamp = new Date().getTime();
     this.date = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
     this.isLocation = false;
+    this.currentTabIndex = 0;
   },
   methods: {
+    dateFormat(fmt, date) {
+      let ret;
+      const opt = {
+        "Y+": date.getFullYear().toString(), // 年
+        "m+": (date.getMonth() + 1).toString(), // 月
+        "d+": date.getDate().toString(), // 日
+        "H+": date.getHours().toString(), // 时
+        "M+": date.getMinutes().toString(), // 分
+        "S+": date.getSeconds().toString(), // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(
+            ret[1],
+            ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, "0")
+          );
+        }
+      }
+      return fmt;
+    },
     async searchOrder() {
       let data = {
         openid: uni.getStorageSync("openid"),
@@ -309,6 +341,19 @@ export default {
       const res = await request("/close/order", "POST", data);
       console.log("res", res);
       if (res.code == "00000") {
+        this.getRoomList();
+        await this.getRoomInfo();
+        this.getRoomStatus();
+        this.dateMin = this.dateFormat("YYYY-mm-dd HH:MM", new Date());
+        console.log(this.dateMin);
+        this.timeState[0] = false;
+        this.timeState[1] = false;
+        this.startTime = "";
+        this.endTime = "";
+        this.timestamp = new Date().getTime();
+        this.date = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
+        this.isLocation = false;
+        this.currentTabIndex = 0;
         this.showToast({
           type: "success",
           message: res.message,
